@@ -7,5 +7,9 @@ weight: -210
 
 I'm a data scientist living in Antwerp, Belgium. 
 
+TOOLS:
+R
+Python
+
 
 
