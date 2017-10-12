@@ -5,7 +5,7 @@ output: html_document
 weight: -210
 ---
 
-I'm a data scientist living in Antwerp, Belgium. 
+I'm a data scientist living in Antwerp, Belgium.
 
 I'm `r floor(as.numeric(Sys.Date() - as.Date("1986-12-09")) / 365)` years old.
 
@@ -14,4 +14,7 @@ R
 Python
 
 
+About This Site
+=========
 
+This site is powered by [netlify](https://netlify.com/) using the [Minimo](https://github.com/MunifTanjim/minimo) [Hugo](https://themes.gohugo.io/) theme. All blog posts are released under a [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
