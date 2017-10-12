@@ -1,0 +1,11 @@
+---
+title: "About"
+menu: main
+output: html_document
+weight: -210
+---
+
+I'm a data scientist living in Antwerp, Belgium. 
+
+
+

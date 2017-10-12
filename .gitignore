@@ -1,0 +1,8 @@
+.Rhistory
+.Rproj.user
+.RData
+.Ruserdata
+*.zip
+/public/*
+/blogdown/*
+*_cache*
