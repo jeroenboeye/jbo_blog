@@ -7,6 +7,8 @@ weight: -210
 
 I'm a data scientist living in Antwerp, Belgium. 
 
+I'm `r floor(as.numeric(Sys.Date() - as.Date("1986-12-09")) / 365)` years old.
+
 TOOLS:
 R
 Python
