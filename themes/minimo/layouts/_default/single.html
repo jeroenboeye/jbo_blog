@@ -12,4 +12,7 @@
   {{ partial "entry/comments" . }}
 </main>
 
+{{ if (not (eq .Site.DisqusShortname "")) | and (.Params.comments) }}
+	{{ partial "disqus.html" . }}
+{{ end }}
 {{ partial "footer" . }}
