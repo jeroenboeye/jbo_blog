@@ -21,7 +21,7 @@ comments: false
  
 Sensor data analysis:
 
-* Combining datasets from multiple sources (Hadoop, Oracle, local files (XML, csv, JSON, excel :cold_sweat:...))
+* Combining datasets from multiple sources (Hadoop, Oracle, local files (XML, csv, JSON, excel :cold_sweat: ...))
 * Building R-packages
 * Tailor visualisations for any dataset
 * Building interactive dashboards
