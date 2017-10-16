@@ -53,7 +53,7 @@ appID = ""
 pageID = ""
 
 [params.opengraph.twitter]
-page = "" # Twitter page username
+page = "JeroenBoeye" # Twitter page username
 
 [params.seo]
 # Title Separator: - – — · • * ⋆ | ~ « » < >
@@ -80,7 +80,6 @@ page = "/:slug/"
 hrefTargetBlank = true
 
 [languages]
-# edit this block for your own language
 [languages.en]
 lang = "en"
 languageName = "English"

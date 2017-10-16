@@ -1,0 +1,55 @@
+---
+title: "Resume"
+menu: main
+output: html_document
+weight: -210
+tags: [resume]
+comments: false
+---
+
+### Tools
+
+* R (main data science tool)
+* SQL (Spark, Impala, Orcale, MSSQL)
+* Python (Monte carlo individual based simulations + some experiments with scikit-learn & keras, hoping to use Pandas for data science in the future too)
+
+
+### Experience
+
+##### Data Scientist, [MCS solutions](https://www.mcssolutions.com/)
+2015-present
+ 
+Sensor data analysis:
+
+* Combining datasets from multiple sources (Hadoop, Oracle, local files (XML, csv, JSON, excel :cold_sweat:...))
+* Building R-packages
+* Tailor visualisations for any dataset
+* Building interactive dashboards
+* Get actionable insights from data and report to clients
+* Set up logging and email alerts for scheduled analyses
+* Forecast comfort conditions (CO2, temperature, humidity)
+* Forecast battery drainage
+* Apply a range of machine learning techniques ([Random forests](https://en.wikipedia.org/wiki/Random_forest), [GLM](https://en.wikipedia.org/wiki/Generalized_linear_model), [PCA](https://en.wikipedia.org/wiki/Principal_component_analysis), [Clustering](https://en.wikipedia.org/wiki/K-means_clustering), regression, [Anomaly detection](https://en.wikipedia.org/wiki/Anomaly_detection),...) + Experiment with neural nets
+
+Custom analyses:
+
+* Vulnerability assessment of global supply chain
+* Optimize office layout based on employee activities
+* Geotagging addresses and spatial analysis
+* Survey analysis
+
+##### PhD student, [Ghent university](http://www.ecology.ugent.be/terec/)
+2011-2015
+ 
+Building complex individual based Monte Carlo models in a spatial context (using Python) and run them on [High Performance Computing infrastructure](https://www.ugent.be/hpc/en). Scientific writing and talks. Mentoring students during their Master thesis and teaching. International collaborations.
+
+### Education
+
+* Ghent univeristy - PhD in eco-evolutionary dynamics, 2015
+* Antwerp university - MS in evolutionary biology, 2010 (Magna Cum Laude)
+* Antwerp university - BS in biology, 2008 (Cum Laude)
+
+### Online Courses
+
+* [Maching Learning](/files/Coursera_machine_learning.pdf) by Andrew Ng, - Stanford Online (Coursera)
+* [R for data science](/figs/udemy_R_data_science.jpg) by Kirill Eremenko, - Udemy
