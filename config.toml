@@ -14,6 +14,7 @@ googleAnalytics = "UA-108004942-1"
 
 Paginate = 5
 preserveTaxonomyNames = true
+enableEmoji = true
 
 enableRobotsTXT = true # generate robots.txt
 
