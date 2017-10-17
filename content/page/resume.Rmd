@@ -7,10 +7,15 @@ tags: [resume]
 comments: false
 ---
 
+### Profile
+
+I enjoy getting insights out of data using programming tools. During my PhD I've learned how to approach complex problems and communicate the results to both expert and non-expert audiences. I have strong data wrangling and visualization skills and typically come up with first results sooner than expected. I'm always keen to expand my technical toolkit and learn new concepts to get more angles while tackling a problem.
+
+
 ### Tools
 
 * R (main data science tool)
-* SQL (Spark, Impala, Orcale, MSSQL)
+* SQL (Spark, Impala, Oracle, MSSQL)
 * Python (Monte carlo individual based simulations + some experiments with scikit-learn & keras, hoping to use Pandas for data science in the future too)
 
 
@@ -21,21 +26,21 @@ comments: false
  
 Sensor data analysis:
 
-* Combining datasets from multiple sources (Hadoop, Oracle, local files (XML, csv, JSON, excel :cold_sweat: ...))
+* Combining data sets from multiple sources (Hadoop, Oracle, local files (xml, csv, json, excel...))
 * Building R-packages
-* Tailor visualisations for any dataset
+* Tailoring visualizations for any data set
 * Building interactive dashboards
-* Get actionable insights from data and report to clients
-* Set up logging and email alerts for scheduled analyses
-* Forecast comfort conditions (CO2, temperature, humidity)
-* Forecast battery drainage
-* Apply a range of machine learning techniques ([Random forests](https://en.wikipedia.org/wiki/Random_forest), [GLM](https://en.wikipedia.org/wiki/Generalized_linear_model), [PCA](https://en.wikipedia.org/wiki/Principal_component_analysis), [Clustering](https://en.wikipedia.org/wiki/K-means_clustering), regression, [Anomaly detection](https://en.wikipedia.org/wiki/Anomaly_detection),...) + Experiment with neural nets
+* Getting actionable insights from data and report to clients
+* Setting up logging and email alerts for scheduled analyses
+* Forecasting comfort conditions (CO2, temperature, humidity)
+* Forecasting battery drainage
+* Applying a range of machine learning techniques ([Random forests](https://en.wikipedia.org/wiki/Random_forest), [GLM](https://en.wikipedia.org/wiki/Generalized_linear_model), [PCA](https://en.wikipedia.org/wiki/Principal_component_analysis), [Clustering](https://en.wikipedia.org/wiki/K-means_clustering), regression, [Anomaly detection](https://en.wikipedia.org/wiki/Anomaly_detection),...) + Experiment with neural nets
 
 Custom analyses:
 
 * Vulnerability assessment of global supply chain
 * Optimize office layout based on employee activities
-* Geotagging addresses and spatial analysis
+* Geo tagging addresses and spatial analysis
 * Survey analysis
 
 ##### PhD student, [Ghent university](http://www.ecology.ugent.be/terec/)
@@ -45,11 +50,31 @@ Building complex individual based Monte Carlo models in a spatial context (using
 
 ### Education
 
-* Ghent univeristy - PhD in eco-evolutionary dynamics, 2015
+* Ghent university - PhD in eco-evolutionary dynamics, 2015
 * Antwerp university - MS in evolutionary biology, 2010 (Magna Cum Laude)
 * Antwerp university - BS in biology, 2008 (Cum Laude)
 
 ### Online Courses
 
-* [Maching Learning](/files/Coursera_machine_learning.pdf) by Andrew Ng, - Stanford Online (Coursera)
+* [Machine Learning](/files/Coursera_machine_learning.pdf) by Andrew Ng, - Stanford Online (Coursera)
 * [R for data science](/figs/udemy_R_data_science.jpg) by Kirill Eremenko, - Udemy
+
+
+### Publications
+
+1. **Jeroen Boeye**, Justin M.J. Travis, Robby Stoks, Dries Bonte (2013) [More rapid climate change promotes evolutionary rescue through selection for increased dispersal distance.](http://onlinelibrary.wiley.com/doi/10.1111/eva.12004/full) *Evolutionary Applications* 2013, 6(2).
+
+2. **Jeroen Boeye**, Alexander Kubisch, Dries Bonte (2014) [Habitat structure mediates spatial segregation and therefore coexistence.](https://link.springer.com/article/10.1007/s10980-014-0010-6) *Landscape Ecology* 2014, 29(4).
+
+3. Jasmijn Hillaert, **Jeroen Boeye**, Robby Stoks, Dries Bonte (2015) [The evolution of thermal performance can constrain dispersal during range shifting.](http://www.tandfonline.com/doi/abs/10.1080/17513758.2015.1078503) *Journal of Biological Dynamics* 2015, 9(1).
+
+4. Raoul Van Damme, Katrien Wijnrocx, **Jeroen Boeye**, Kathleen Huyghe, Stefan Van Dongen (2015) [Digit ratios in two lacertid lizards: sexual dimorphism and morphological and physiological correlates](https://link.springer.com/article/10.1007/s00435-015-0275-6) *Zoomorphology* 2015, 134(4).
+
+5. Katrien H. P. Van Petegem, **Jeroen Boeye**, Robby Stoks, Dries Bonte (2016) [Spatial Selection and Local Adaptation Jointly Shape Life-History Evolution during Range Expansion.](http://www.journals.uchicago.edu/doi/abs/10.1086/688666#fn2) *Journal of Biological Dynamics* 2016, 188(5).
+
+### Interests
+
+* I participated in the [2016 Halite AI challenge](https://2016.halite.io/index.php). Despite discovering it 3 weeks before deadline I managed to get into the [top 15%](https://2016.halite.io/user.php?userID=4991) using a Python bot.
+* [Football](https://i.imgur.com/PfVPA.jpg)
+* Running
+* Cycling
