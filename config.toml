@@ -9,7 +9,7 @@ contentdir = "content"
 layoutdir = "layouts"
 publishdir = "public"
 
-disqusShortname = "jeroenboeye"
+disqusShortname = "jeroenboeye-com"
 googleAnalytics = "UA-108004942-1"
 
 Paginate = 5
