@@ -1,7 +1,7 @@
 ---
 title: 'Solar analysis pt 1: Exploration'
 author: Jeroen Boeye
-date: '2017-10-13'
+date: '2017-10-18'
 slug: solar-analysis-pt-1-Exploration
 comments: true
 categories: [rstats]
@@ -12,8 +12,8 @@ tags: [Solar, R]
 
 <div id="intro" class="section level3">
 <h3>Intro</h3>
-<p>I have a nice solar panel data set that I’ve been playing around with quite a bit. When active the panels send power level and temperature data every 10 minutes and they have been doing so since November 2015. The goal of this post is to get some feeling of the patterns in this dataset. I’ll be using tools from the R <a href="https://www.tidyverse.org/">tidyverse</a> to do so.</p>
-<p>Let’s start by loading the <a href="https://github.com/jeroenboeye/jbo_blog/blob/master/static/files/solar_power.csv">data</a>.</p>
+<p>I have a nice solar panel data set that I’ve been playing around with quite a bit. When active the panels send power and temperature data every 10 minutes and they have been doing so since November 2015. The goal of this post is to get some feeling of the patterns in this dataset. I’ll be using tools from the R <a href="https://www.tidyverse.org/">tidyverse</a> to do so.</p>
+<p>Let’s start by loading the <a href="https://github.com/jeroenboeye/jbo_blog/blob/master/static/files/solar_power.csv">data</a> and looking at the last 6 rows.</p>
 <pre class="r"><code>library(rprojroot)
 library(lubridate)
 rt &lt;- rprojroot::is_rstudio_project
@@ -27,7 +27,9 @@ solar_df &lt;- read_csv2(rt$find_file(&quot;static/files/solar_power.csv&quot;))
   # Since we don&#39;t want summer vs winter hour differences
   # we now transform to UTC and add one hour. 
   # This puts all hours in CET winter time
-  mutate(timestamp = with_tz(timestamp, tzone = &#39;UTC&#39;) + 3600)</code></pre>
+  mutate(timestamp = with_tz(timestamp, tzone = &#39;UTC&#39;) + 3600)
+
+kable(tail(solar_df), align = &#39;c&#39;, format = &#39;html&#39;)</code></pre>
 <table>
 <thead>
 <tr>
@@ -45,21 +47,43 @@ power
 <tbody>
 <tr>
 <td style="text-align:center;">
-2017-10-13 08:10:00
+2017-10-17 17:20:00
 </td>
 <td style="text-align:center;">
-20.5
+26.1
 </td>
 <td style="text-align:center;">
-27
+52
 </td>
 </tr>
 <tr>
 <td style="text-align:center;">
-2017-10-13 08:00:00
+2017-10-17 17:30:00
 </td>
 <td style="text-align:center;">
-20.0
+25.7
+</td>
+<td style="text-align:center;">
+26
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2017-10-17 17:40:00
+</td>
+<td style="text-align:center;">
+25.3
+</td>
+<td style="text-align:center;">
+14
+</td>
+</tr>
+<tr>
+<td style="text-align:center;">
+2017-10-17 17:50:00
+</td>
+<td style="text-align:center;">
+24.7
 </td>
 <td style="text-align:center;">
 6
@@ -67,43 +91,21 @@ power
 </tr>
 <tr>
 <td style="text-align:center;">
-2017-10-13 07:50:00
+2017-10-17 18:00:00
 </td>
 <td style="text-align:center;">
-19.7
+24.2
 </td>
 <td style="text-align:center;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-2017-10-13 07:40:00
-</td>
-<td style="text-align:center;">
-19.5
-</td>
-<td style="text-align:center;">
-0
+2
 </td>
 </tr>
 <tr>
 <td style="text-align:center;">
-2017-10-13 07:30:00
+2017-10-17 18:10:00
 </td>
 <td style="text-align:center;">
-19.3
-</td>
-<td style="text-align:center;">
-0
-</td>
-</tr>
-<tr>
-<td style="text-align:center;">
-2017-10-13 07:20:00
-</td>
-<td style="text-align:center;">
-19.1
+23.9
 </td>
 <td style="text-align:center;">
 0
@@ -123,7 +125,7 @@ temperature_palette &lt;- rev(brewer.pal(9, &quot;RdBu&quot;)[c(1:4, 6:9)])
 
 solar_df%&gt;%
   ggplot(aes(x = timestamp, y = power, colour = temperature))+
-  geom_point(alpha = 0.6, size = rel(0.9)) +
+  geom_point(alpha = 0.6, size = rel(0.8)) +
   scale_x_datetime(date_breaks = &quot;3 months&quot;, 
                    date_labels = &quot;%b\n%Y&quot;, expand = c(0, 0))+
   scale_y_continuous(expand = c(0, 0))+
@@ -138,7 +140,7 @@ solar_df%&gt;%
         axis.title.x = element_blank())+
   guides(colour = guide_legend(title.position = &quot;top&quot;, 
                                override.aes = list(size = rel(3))))</code></pre>
-<p><img src="/blog/2017-10-13-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-3-1.png" width="1440" /> Each dot represents the power measured over a 10 minute interval. The differences between summer and winter are quite striking. My hometown Antwerp has a latitude of 51.2° so seasonal differences are strong. From <a href="https://www.timeanddate.com/sun/belgium/antwerp">this</a> cool website we learn that in the midst of winter the sun only rises to 15.4° above the horizon whereas in the hart of summer it goes up to 62.2°. Also notice how in summer the panel’s temperature can go up to 45°C!</p>
+<p><img src="/blog/2017-10-18-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-2-1.png" width="1440" /> Each dot represents the power measured over a 10 minute interval. The differences between summer and winter are quite striking. My hometown Antwerp has a latitude of 51.2° so seasonal differences are strong. From <a href="https://www.timeanddate.com/sun/belgium/antwerp">this</a> cool website we learn that in the midst of winter the sun only rises to 15.4° above the horizon whereas in the hart of summer it goes up to 62.2°. Also notice how in summer the panel’s temperature can go up to 45°C!</p>
 <p>Let’s have a closer look at this temperature variable by putting it on the y-axis.</p>
 <pre class="r"><code>solar_df%&gt;%
   ggplot(aes(x = timestamp, y = temperature, colour = power))+
@@ -155,7 +157,7 @@ solar_df%&gt;%
         axis.title.x = element_blank())+
   guides(colour = guide_legend(title.position = &quot;top&quot;, 
                                override.aes = list(size = rel(3))))</code></pre>
-<p><img src="/blog/2017-10-13-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-4-1.png" width="1440" /> Again we see a nice seasonal pattern. 45°C is quite hot and will probably have a negative effect on the efficiency of the panels, in a follow up post I will investigate the effect of temperature on power yield in more detail.</p>
+<p><img src="/blog/2017-10-18-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-3-1.png" width="1440" /> Again we see a nice seasonal pattern. 45°C is quite hot and will probably have a negative effect on the efficiency of the panels, in a follow up post I will investigate the effect of temperature on power yield in more detail.</p>
 </div>
 <div id="seasonal-variance-and-the-time-of-day" class="section level3">
 <h3>Seasonal variance and the time of day</h3>
@@ -179,11 +181,11 @@ solar_df%&gt;%
         legend.justification = &#39;left&#39;)+
   guides(colour = guide_legend(title.position = &quot;top&quot;, nrow = 1,
                              override.aes = list(size = rel(3))))</code></pre>
-<p><img src="/blog/2017-10-13-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-5-1.png" width="1440" /> Notice how in February the panels remain cool while producing 500 Watts at noon whereas in summer panels are only cool in the early morning and late evening. Moreover, there are a couple of interesting things going on with the shape of these scatter plots. From November to January it seems like something bit the top off the typical bell shape. The culprit is a tree South of my house, in summer the Sun passes over this tree but in winter it is temporarily obscured, hence the lower power. A second tree more to the east but closer to my home causes the asymmetrical shape in summer months. In the mornings it too casts a shadow on the roof. In yet another follow up post I plan to investigate this in more detail.</p>
+<p><img src="/blog/2017-10-18-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-4-1.png" width="1440" /> Notice how in February the panels remain cool while producing 500 Watts at noon whereas in summer panels are only cool in the early morning and late evening. Moreover, there are a couple of interesting things going on with the shape of these scatter plots. From November to January it seems like something bit the top off the typical bell shape. The culprit is a tree South of my house, in summer the Sun passes over this tree but in winter it is temporarily obscured, hence the lower power. A second tree more to the east but closer to my home causes the asymmetrical shape in summer months. In the mornings it too casts a shadow on the roof. In yet another follow up post I plan to investigate this in more detail.</p>
 </div>
 <div id="hourly-aggregates" class="section level3">
 <h3>Hourly aggregates</h3>
-<p>I want to create some visuals showing per hour aggregates over multiple years. To do so I must prep a new data set. I want to use vertical <a href="http://ggplot2.tidyverse.org/reference/facet_grid.html">facets</a> for the different years and have the time within each year on the x-axis. To have the same x-axis range for all years I will standardize all dates to a day in the year 1970. The actual year will be stored in a different column.</p>
+<p>I want to create some visuals showing per hour aggregates over multiple years. To do so I must prep a new data set. I want to use vertical <a href="http://ggplot2.tidyverse.org/reference/facet_grid.html">facets</a> for the different years and have the time within each year on the x-axis. To have the same x-axis range for all years I will standardize all dates to a day in the year 1970. The actual year will be stored in a different column. Below is the analysis and the first 6 rows of the new data set.</p>
 <pre class="r"><code>per_hour_solar_df &lt;- solar_df%&gt;%
   mutate(hour = round(hour(timestamp) + minute(timestamp) / 60),
          date = as_date(&quot;1970-01-01&quot;) + yday(as_date(timestamp)) - 1,
@@ -193,7 +195,9 @@ solar_df%&gt;%
   group_by(year, date, hour)%&gt;%
   summarise(mean_temp = round(mean(temperature), 1),
             mean_power = round(mean(power)))%&gt;%
-  ungroup()</code></pre>
+  ungroup()
+
+kable(head(per_hour_solar_df), align = &#39;c&#39;, format = &#39;html&#39;)</code></pre>
 <table>
 <thead>
 <tr>
@@ -342,7 +346,7 @@ mean_power
                                       fill = NA, size = rel(0.2)))+
   guides(fill = guide_legend(title.position = &quot;top&quot;, keywidth = 0.7, 
                              keyheight = 0.7, label.vjust = 0.7))</code></pre>
-<p><img src="/blog/2017-10-13-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-8-1.png" width="1440" /> Temperatures above 35°C are caused by direct sunlight. Notice how before 11AM this rarely happens due to the shade of the Eastern tree. You can also see that in the last couple of months I’ve had some issues with missing data.</p>
+<p><img src="/blog/2017-10-18-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-6-1.png" width="1440" /> We can nicely see how daylengths evolve throughout the year. Temperatures above 35°C are caused by direct sunlight, notice how before 11AM this rarely happens due to the shade of the Eastern tree. You can also see that in the last couple of months I’ve had some issues with missing data.</p>
 <p>Let’s create the same plot for the power level.</p>
 <pre class="r"><code>per_hour_solar_df%&gt;%
   ggplot(aes(x = date, y = hour, fill = mean_power))+
@@ -369,6 +373,6 @@ mean_power
                              keywidth = 0.7, 
                              keyheight = 0.7, 
                              label.vjust = 0.7))</code></pre>
-<p><img src="/blog/2017-10-13-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-9-1.png" width="1260" /> This gives us a very similar pattern. Weather in Belgium was really bad at the start of June 2016, you can spot this in the graph in the form of a vertical purple band.</p>
+<p><img src="/blog/2017-10-18-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-7-1.png" width="1260" /> This gives us a very similar pattern. Weather in Belgium was really bad at the start of June 2016, you can spot this in the graph in the form of a vertical purple band.</p>
 <p>This is all for now. I hope you enjoyed my first blog post. As mentioned I plan to dig a bit deeper in this data set in some follow up posts. Cheers!</p>
 </div>

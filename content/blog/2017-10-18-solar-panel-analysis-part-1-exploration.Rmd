@@ -1,7 +1,7 @@
 ---
 title: 'Solar analysis pt 1: Exploration'
 author: Jeroen Boeye
-date: '2017-10-17'
+date: '2017-10-18'
 slug: solar-analysis-pt-1-Exploration
 comments: true
 categories: [rstats]
@@ -22,9 +22,9 @@ library(dplyr)
 
 ### Intro
 
-I have a nice solar panel data set that I've been playing around with quite a bit. When active the panels send power level and temperature data every 10 minutes and they have been doing so since November 2015. The goal of this post is to get some feeling of the patterns in this dataset. I'll be using tools from the R [tidyverse](https://www.tidyverse.org/) to do so.
+I have a nice solar panel data set that I've been playing around with quite a bit. When active the panels send power and temperature data every 10 minutes and they have been doing so since November 2015. The goal of this post is to get some feeling of the patterns in this dataset. I'll be using tools from the R [tidyverse](https://www.tidyverse.org/) to do so.
 
-Let's start by loading the [data](https://github.com/jeroenboeye/jbo_blog/blob/master/static/files/solar_power.csv).
+Let's start by loading the [data](https://github.com/jeroenboeye/jbo_blog/blob/master/static/files/solar_power.csv) and looking at the last 6 rows.
 ```{r}
 library(rprojroot)
 library(lubridate)
@@ -41,14 +41,9 @@ solar_df <- read_csv2(rt$find_file("static/files/solar_power.csv"))%>%
   # This puts all hours in CET winter time
   mutate(timestamp = with_tz(timestamp, tzone = 'UTC') + 3600)
 
-```
-
-```{r, echo=FALSE}
 kable(tail(solar_df), align = 'c', format = 'html')
 ```
 
- 
- 
 ### Power and temperature over time
 Let's see how power changes over time.
 ```{r, fig.width=8, fig.height=4}
@@ -60,7 +55,7 @@ temperature_palette <- rev(brewer.pal(9, "RdBu")[c(1:4, 6:9)])
 
 solar_df%>%
   ggplot(aes(x = timestamp, y = power, colour = temperature))+
-  geom_point(alpha = 0.6, size = rel(0.9)) +
+  geom_point(alpha = 0.6, size = rel(0.8)) +
   scale_x_datetime(date_breaks = "3 months", 
                    date_labels = "%b\n%Y", expand = c(0, 0))+
   scale_y_continuous(expand = c(0, 0))+
@@ -133,7 +128,7 @@ Moreover, there are a couple of interesting things going on with the shape of th
 
 ### Hourly aggregates
 
-I want to create some visuals showing per hour aggregates over multiple years. To do so I must prep a new data set. I want to use vertical [facets](http://ggplot2.tidyverse.org/reference/facet_grid.html) for the different years and have the time within each year on the x-axis. To have the same x-axis range for all years I will standardize all dates to a day in the year 1970. The actual year will be stored in a different column.
+I want to create some visuals showing per hour aggregates over multiple years. To do so I must prep a new data set. I want to use vertical [facets](http://ggplot2.tidyverse.org/reference/facet_grid.html) for the different years and have the time within each year on the x-axis. To have the same x-axis range for all years I will standardize all dates to a day in the year 1970. The actual year will be stored in a different column. Below is the analysis and the first 6 rows of the new data set.
 ```{r}
 per_hour_solar_df <- solar_df%>%
   mutate(hour = round(hour(timestamp) + minute(timestamp) / 60),
@@ -145,14 +140,11 @@ per_hour_solar_df <- solar_df%>%
   summarise(mean_temp = round(mean(temperature), 1),
             mean_power = round(mean(power)))%>%
   ungroup()
-```
 
-```{r, echo=FALSE}
 kable(head(per_hour_solar_df), align = 'c', format = 'html')
 ```
 
- 
- 
+
 Now let's create a plot with the mean hourly temperature of the panels over multiple  years.
 ```{r, fig.width=8, fig.height=6}
 per_hour_solar_df%>%
@@ -178,7 +170,7 @@ per_hour_solar_df%>%
   guides(fill = guide_legend(title.position = "top", keywidth = 0.7, 
                              keyheight = 0.7, label.vjust = 0.7))
 ```
-Temperatures above 35°C are caused by direct sunlight. Notice how before 11AM this rarely happens due to the shade of the Eastern tree. You can also see that in the last couple of months I've had some issues with missing data.
+We can nicely see how daylengths evolve throughout the year. Temperatures above 35°C are caused by direct sunlight, notice how before 11AM this rarely happens due to the shade of the Eastern tree. You can also see that in the last couple of months I've had some issues with missing data.
  
 Let's create the same plot for the power level.
 ```{r}
