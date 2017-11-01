@@ -74,7 +74,7 @@ Building complex individual based Monte Carlo models in a spatial context (using
 
 ### Interests
 
-* I participated in the [2016 Halite AI challenge](https://2016.halite.io/index.php). Despite discovering it 3 weeks before deadline I managed to get into the [top 15%](https://2016.halite.io/user.php?userID=4991) using a Python bot.
+* I [participated](https://2016.halite.io/user.php?userID=4991) in the [2016 Halite AI challenge](https://2016.halite.io/index.php) using a Python bot.
 * [Football](https://i.imgur.com/PfVPA.jpg)
 * Running
 * Cycling

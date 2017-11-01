@@ -1,11 +1,11 @@
 ---
-title: 'Solar analysis pt 1: Exploration'
+title: 'Solar panel analysis pt 1: Exploration'
 author: Jeroen Boeye
-date: '2017-10-18'
-slug: solar-analysis-pt-1-Exploration
+date: '2017-11-01'
+slug: solar-panel-analysis-pt-1-Exploration
 comments: true
 categories: [rstats]
-tags: [Solar, R]
+tags: [Solar, Photovoltaic, R]
 ---
 
 
@@ -171,35 +171,6 @@ per_hour_solar_df%>%
                              keyheight = 0.7, label.vjust = 0.7))
 ```
 We can nicely see how daylengths evolve throughout the year. Temperatures above 35°C are caused by direct sunlight, notice how before 11AM this rarely happens due to the shade of the Eastern tree. You can also see that in the last couple of months I've had some issues with missing data.
- 
-Let's create the same plot for the power level.
-```{r}
-per_hour_solar_df%>%
-  ggplot(aes(x = date, y = hour, fill = mean_power))+
-  geom_tile()+
-  facet_grid(year~.)+
-  scale_y_continuous(expand = c(0, 0))+
-  scale_x_date(date_breaks = "2 months", 
-               date_labels = "%B", expand = c(0, 0))+
-  viridis::scale_fill_viridis(name = 'Power (W)', 
-                              limits = c(0, 1500),
-                       breaks = c(0, 500, 1000, 1500)) +
-  labs(y = 'Hour of the day')+
-  theme_minimal()+
-    theme(text = element_text(colour = "grey40"),
-          axis.title.x = element_blank(),
-          strip.text.y = element_text(colour = "grey40", 
-                                      size = rel(1.3)),
-          legend.position = 'top',
-          legend.justification = 'left',
-          panel.border = element_rect(colour = 'grey40', 
-                                      fill = NA, 
-                                      size = rel(0.2)))+
-  guides(fill = guide_legend(title.position = "top", 
-                             keywidth = 0.7, 
-                             keyheight = 0.7, 
-                             label.vjust = 0.7))
-```
-This gives us a very similar pattern. Weather in Belgium was really bad at the start of June 2016, you can spot this in the graph in the form of a vertical purple band.
+
 
 This is all for now. I hope you enjoyed my first blog post. As mentioned I plan to dig a bit deeper in this data set in some follow up posts. Cheers! 

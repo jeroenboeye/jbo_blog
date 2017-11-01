@@ -1,11 +1,11 @@
 ---
-title: 'Solar analysis pt 1: Exploration'
+title: 'Solar panel analysis pt 1: Exploration'
 author: Jeroen Boeye
-date: '2017-10-18'
-slug: solar-analysis-pt-1-Exploration
+date: '2017-11-01'
+slug: solar-panel-analysis-pt-1-Exploration
 comments: true
 categories: [rstats]
-tags: [Solar, R]
+tags: [Solar, Photovoltaic, R]
 ---
 
 
@@ -47,21 +47,21 @@ power
 <tbody>
 <tr>
 <td style="text-align:center;">
-2017-10-17 17:20:00
+2017-10-31 16:40:00
 </td>
 <td style="text-align:center;">
-26.1
+23.2
 </td>
 <td style="text-align:center;">
-52
+31
 </td>
 </tr>
 <tr>
 <td style="text-align:center;">
-2017-10-17 17:30:00
+2017-10-31 16:50:00
 </td>
 <td style="text-align:center;">
-25.7
+23.0
 </td>
 <td style="text-align:center;">
 26
@@ -69,21 +69,21 @@ power
 </tr>
 <tr>
 <td style="text-align:center;">
-2017-10-17 17:40:00
+2017-10-31 17:00:00
 </td>
 <td style="text-align:center;">
-25.3
+22.8
 </td>
 <td style="text-align:center;">
-14
+15
 </td>
 </tr>
 <tr>
 <td style="text-align:center;">
-2017-10-17 17:50:00
+2017-10-31 17:10:00
 </td>
 <td style="text-align:center;">
-24.7
+22.4
 </td>
 <td style="text-align:center;">
 6
@@ -91,10 +91,10 @@ power
 </tr>
 <tr>
 <td style="text-align:center;">
-2017-10-17 18:00:00
+2017-10-31 17:20:00
 </td>
 <td style="text-align:center;">
-24.2
+22.1
 </td>
 <td style="text-align:center;">
 2
@@ -102,10 +102,10 @@ power
 </tr>
 <tr>
 <td style="text-align:center;">
-2017-10-17 18:10:00
+2017-10-31 17:30:00
 </td>
 <td style="text-align:center;">
-23.9
+21.8
 </td>
 <td style="text-align:center;">
 0
@@ -140,7 +140,7 @@ solar_df%&gt;%
         axis.title.x = element_blank())+
   guides(colour = guide_legend(title.position = &quot;top&quot;, 
                                override.aes = list(size = rel(3))))</code></pre>
-<p><img src="/blog/2017-10-18-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-2-1.png" width="1440" /> Each dot represents the power measured over a 10 minute interval. The differences between summer and winter are quite striking. My hometown Antwerp has a latitude of 51.2° so seasonal differences are strong. From <a href="https://www.timeanddate.com/sun/belgium/antwerp">this</a> cool website we learn that in the midst of winter the sun only rises to 15.4° above the horizon whereas in the hart of summer it goes up to 62.2°. Also notice how in summer the panel’s temperature can go up to 45°C!</p>
+<p><img src="/blog/2017-11-01-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-2-1.png" width="1440" /> Each dot represents the power measured over a 10 minute interval. The differences between summer and winter are quite striking. My hometown Antwerp has a latitude of 51.2° so seasonal differences are strong. From <a href="https://www.timeanddate.com/sun/belgium/antwerp">this</a> cool website we learn that in the midst of winter the sun only rises to 15.4° above the horizon whereas in the hart of summer it goes up to 62.2°. Also notice how in summer the panel’s temperature can go up to 45°C!</p>
 <p>Let’s have a closer look at this temperature variable by putting it on the y-axis.</p>
 <pre class="r"><code>solar_df%&gt;%
   ggplot(aes(x = timestamp, y = temperature, colour = power))+
@@ -157,7 +157,7 @@ solar_df%&gt;%
         axis.title.x = element_blank())+
   guides(colour = guide_legend(title.position = &quot;top&quot;, 
                                override.aes = list(size = rel(3))))</code></pre>
-<p><img src="/blog/2017-10-18-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-3-1.png" width="1440" /> Again we see a nice seasonal pattern. 45°C is quite hot and will probably have a negative effect on the efficiency of the panels, in a follow up post I will investigate the effect of temperature on power yield in more detail.</p>
+<p><img src="/blog/2017-11-01-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-3-1.png" width="1440" /> Again we see a nice seasonal pattern. 45°C is quite hot and will probably have a negative effect on the efficiency of the panels, in a follow up post I will investigate the effect of temperature on power yield in more detail.</p>
 </div>
 <div id="seasonal-variance-and-the-time-of-day" class="section level3">
 <h3>Seasonal variance and the time of day</h3>
@@ -181,7 +181,7 @@ solar_df%&gt;%
         legend.justification = &#39;left&#39;)+
   guides(colour = guide_legend(title.position = &quot;top&quot;, nrow = 1,
                              override.aes = list(size = rel(3))))</code></pre>
-<p><img src="/blog/2017-10-18-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-4-1.png" width="1440" /> Notice how in February the panels remain cool while producing 500 Watts at noon whereas in summer panels are only cool in the early morning and late evening. Moreover, there are a couple of interesting things going on with the shape of these scatter plots. From November to January it seems like something bit the top off the typical bell shape. The culprit is a tree South of my house, in summer the Sun passes over this tree but in winter it is temporarily obscured, hence the lower power. A second tree more to the east but closer to my home causes the asymmetrical shape in summer months. In the mornings it too casts a shadow on the roof. In yet another follow up post I plan to investigate this in more detail.</p>
+<p><img src="/blog/2017-11-01-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-4-1.png" width="1440" /> Notice how in February the panels remain cool while producing 500 Watts at noon whereas in summer panels are only cool in the early morning and late evening. Moreover, there are a couple of interesting things going on with the shape of these scatter plots. From November to January it seems like something bit the top off the typical bell shape. The culprit is a tree South of my house, in summer the Sun passes over this tree but in winter it is temporarily obscured, hence the lower power. A second tree more to the east but closer to my home causes the asymmetrical shape in summer months. In the mornings it too casts a shadow on the roof. In yet another follow up post I plan to investigate this in more detail.</p>
 </div>
 <div id="hourly-aggregates" class="section level3">
 <h3>Hourly aggregates</h3>
@@ -346,33 +346,6 @@ mean_power
                                       fill = NA, size = rel(0.2)))+
   guides(fill = guide_legend(title.position = &quot;top&quot;, keywidth = 0.7, 
                              keyheight = 0.7, label.vjust = 0.7))</code></pre>
-<p><img src="/blog/2017-10-18-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-6-1.png" width="1440" /> We can nicely see how daylengths evolve throughout the year. Temperatures above 35°C are caused by direct sunlight, notice how before 11AM this rarely happens due to the shade of the Eastern tree. You can also see that in the last couple of months I’ve had some issues with missing data.</p>
-<p>Let’s create the same plot for the power level.</p>
-<pre class="r"><code>per_hour_solar_df%&gt;%
-  ggplot(aes(x = date, y = hour, fill = mean_power))+
-  geom_tile()+
-  facet_grid(year~.)+
-  scale_y_continuous(expand = c(0, 0))+
-  scale_x_date(date_breaks = &quot;2 months&quot;, 
-               date_labels = &quot;%B&quot;, expand = c(0, 0))+
-  viridis::scale_fill_viridis(name = &#39;Power (W)&#39;, 
-                              limits = c(0, 1500),
-                       breaks = c(0, 500, 1000, 1500)) +
-  labs(y = &#39;Hour of the day&#39;)+
-  theme_minimal()+
-    theme(text = element_text(colour = &quot;grey40&quot;),
-          axis.title.x = element_blank(),
-          strip.text.y = element_text(colour = &quot;grey40&quot;, 
-                                      size = rel(1.3)),
-          legend.position = &#39;top&#39;,
-          legend.justification = &#39;left&#39;,
-          panel.border = element_rect(colour = &#39;grey40&#39;, 
-                                      fill = NA, 
-                                      size = rel(0.2)))+
-  guides(fill = guide_legend(title.position = &quot;top&quot;, 
-                             keywidth = 0.7, 
-                             keyheight = 0.7, 
-                             label.vjust = 0.7))</code></pre>
-<p><img src="/blog/2017-10-18-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-7-1.png" width="1260" /> This gives us a very similar pattern. Weather in Belgium was really bad at the start of June 2016, you can spot this in the graph in the form of a vertical purple band.</p>
+<p><img src="/blog/2017-11-01-solar-panel-analysis-part-1-exploration_files/figure-html/unnamed-chunk-6-1.png" width="1440" /> We can nicely see how daylengths evolve throughout the year. Temperatures above 35°C are caused by direct sunlight, notice how before 11AM this rarely happens due to the shade of the Eastern tree. You can also see that in the last couple of months I’ve had some issues with missing data.</p>
 <p>This is all for now. I hope you enjoyed my first blog post. As mentioned I plan to dig a bit deeper in this data set in some follow up posts. Cheers!</p>
 </div>
