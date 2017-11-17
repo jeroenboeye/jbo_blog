@@ -4,8 +4,11 @@ author: Jeroen Boeye
 date: '2017-11-01'
 slug: solar-panel-analysis-pt-1-Exploration
 comments: true
-categories: [rstats]
+categories: [R]
 tags: [Solar, Photovoltaic, R]
+large_thumb: true
+img:
+    thumb: "/figs/panel_temp_per_hour.png"
 ---
 
 
