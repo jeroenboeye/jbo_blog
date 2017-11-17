@@ -1,0 +1,60 @@
+ 
+ <!-- from https://github.com/thomasp85/data_imaginist/blob/master/layouts/partials/head.html  -->
+ {{ with .Params.twitter }}
+    <meta name="twitter:site" content="@jeroenboeye">
+    <meta name="twitter:creator" content="@jeroenboeye">
+    <meta property="og:image" content="{{ .Site.BaseURL }}{{ .Params.img.thumb }}" />
+    <meta name="twitter:image:src" content="{{ .Site.BaseURL }}{{ .Params.img.thumb }}">
+    <meta content="{{ .Site.Title }}" property="og:site_name">
+    
+    
+    {{ if .Params.large_thumb }}
+      <meta name="twitter:card" content="summary_large_image">
+    {{ else }}
+      <meta name="twitter:card" content="summary">
+    {{ end }}
+  
+    <!-- Set a page title, or default to site title if missing for some reason  -->
+  
+    {{ if .Title }}
+      <meta name="twitter:title" content="{{ .Title }}">
+      <meta content="{{ .Title }}" property="og:title">
+      <meta content="article" property="og:type">
+    {{ else }}
+      <meta name="twitter:title" content="{{ .Site.Title }}">
+      <meta content="{{ .Site.Title }}" property="og:title">
+      <meta content="website" property="og:type">
+    {{ end }}
+  
+    <!-- set page description or default to site description  -->
+  
+    {{ if .Description }}
+      <meta name="twitter:description" content="{{ .Description }}">
+      <meta content="{{ .Description }}" property="og:description">
+    {{ else }}
+      <meta name="twitter:description" content="{{ .Site.Params.description }}">
+      <meta content="{{ .Site.Params.description }}" property="og:description">
+    {{ end }}
+  
+    {{ if .URL }}
+      <meta name="twitter:url" content="{{ .Site.BaseURL }}{{ .URL }}">
+      <meta content="{{ .Site.BaseURL }}{{ .URL }}" property="og:url">
+    {{ end }}
+  
+    {{ if .Date }}
+      <meta content="{{ .Date }}" property="article:published_time">
+    {{ end }}
+  
+    {{ if .Params.categories }}
+      {{ range first 1 .Params.categories }}
+      <meta content="{{ . }}" property="article:section">
+      {{ end }}
+    {{ end }}
+      
+    {{ if .Params.tags }}
+      {{ range .Params.tags }}
+      <meta content="{{ . }}" property="article:tag">
+      {{ end }}
+    {{ end }}
+{{ end }}
+<!-- End cards -->
