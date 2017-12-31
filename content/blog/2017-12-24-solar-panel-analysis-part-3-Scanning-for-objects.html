@@ -1,0 +1,347 @@
+---
+title: 'Solar panel analysis pt 3: Scanning for objects'
+author: Jeroen Boeye
+date: '2018-01-01'
+slug: solar-panel-analysis-pt-3-Scanning-for-objects
+comments: true
+categories: [R]
+tags: [Solar, Photovoltaic, R]
+---
+
+
+
+<div id="intro" class="section level3">
+<h3>Intro</h3>
+<p>In the first post on my solar panel dataset we did some <a href="https://www.jeroenboeye.com/blog/solar-panel-analysis-pt-1-exploration/">exploration</a> and found a number of interesting patterns. One of these was the effect of temperature on the efficiency of the panels which we investigated further in the <a href="https://www.jeroenboeye.com/blog/solar-panel-analysis-pt-2-temperature-and-efficiency/">second post</a>. Another interesting pattern found while exploring the data was that for a number of months the maximal power throughout the day did not follow the expected bell shape curve. Let’s load the <a href="https://github.com/jeroenboeye/jbo_blog/blob/master/static/files/solar_power.csv">data</a> and visualize the maximal values per time of the day for June and December so you get an idea of what I’m talking about.</p>
+<pre class="r"><code>library(rprojroot)
+library(tidyverse)
+library(lubridate)
+rt &lt;- rprojroot::is_rstudio_project
+
+solarplant_df &lt;- read_csv2(rt$find_file(&quot;static/files/solar_power.csv&quot;))%&gt;%
+  # the times in the raw dataset have CET/CEST timezones
+  # by default they will be read as UTC
+  # we undo this by forcing the correct timezone 
+  # (without changing the times)
+  mutate(timestamp = force_tz(timestamp, tzone = &#39;CET&#39;))%&gt;%
+  # Since we don&#39;t want summer vs winter hour differences
+  # we now transform to UTC and add one hour. 
+  # This puts all hours in CET winter time
+  mutate(timestamp = with_tz(timestamp, tzone = &#39;UTC&#39;) + 3600)%&gt;%
+  # temperature not selected for this post
+  select(timestamp, power)%&gt;%
+  # round the timestamps to 10 minutes.
+  # +95% of the data is allready in this format
+  mutate(timestamp = round_date(timestamp, unit = &quot;10 minutes&quot;))
+
+solarplant_df%&gt;%
+  mutate(hour = hour(timestamp) + minute(timestamp) / 60,
+         month = month(timestamp, label = T, abbr = F))%&gt;%
+  filter(month %in% c(&#39;December&#39;, &#39;June&#39;))%&gt;%
+  select(month, hour, power)%&gt;%
+  group_by(month, hour)%&gt;%
+  mutate(power = max(power))%&gt;%
+  ggplot(aes(x = hour, y = power)) +
+  geom_point(alpha = 0.8, size = rel(0.8), shape = 21) +
+  facet_wrap(~month) +
+  labs(x = &#39;Time of day (h)&#39;,
+       y = &#39;Power (W)&#39;) +
+  theme_minimal() +
+  theme(text = element_text(colour = &quot;grey40&quot;),
+        strip.text.x = element_text(colour = &quot;grey40&quot;),
+        panel.grid.minor = element_blank(),
+        panel.border = element_rect(colour = &quot;grey40&quot;, 
+                                    size = rel(0.3),
+                                    fill = NA),
+        legend.position = &#39;top&#39;,
+        legend.justification = &#39;left&#39;)</code></pre>
+<p><img src="/blog/2017-12-24-solar-panel-analysis-part-3-Scanning-for-objects_files/figure-html/unnamed-chunk-1-1.png" width="1080" /></p>
+<p>Looking at the highest values for each time of the day we get an asymmetrical shape with lower maximum values in the morning in June while we get less than expected maximum values around noon in December. This pattern is caused by two trees to the east and south of my home which cast a shade on the roof during different times of the day. The tree to the south is not too close to the house and only when the Sun’s elevation is very low in winter does it’s shade reach the roof.</p>
+</div>
+<div id="visualising-the-obscuring-objects" class="section level3">
+<h3>Visualising the obscuring objects</h3>
+<p>While I know that the trees are behind this pattern I was wondering if we could derive their location and shape from the data. If we could somehow get a value for the power loss for each timestamp in the dataset we should be able to couple this data to a position of the Sun at that time using the <strong><code>solarpos</code></strong> function from the <strong><code>maptools</code></strong> package. Then we could create a panoramic picture where each pixel is a position of the sun throughout the year as seen by the panels. The solar positions that consistently yield little power should then match the trees. This sounds like a fun idea, but to get there we first need to get an idea of the power loss per timestamp. We’ll have to create a model that gives us the theoretical maximum output for each timestamp and then calculate the difference with the observed values.</p>
+</div>
+<div id="visualising-a-full-year-of-solar-positions" class="section level3">
+<h3>Visualising a full year of solar positions</h3>
+<p>Before we dive into modelling the maximal power outputs let’s look at the solar positions we will bind the power loss data to. We get all solar positions for a full year in 10 minute intervals and filter out the values where the Sun is below the horizon (negative elevation).</p>
+<pre class="r"><code>library(sp)
+library(maptools)
+library(viridis)
+
+# My home coordinates, needed to calculate the solar elevation
+home_coords &lt;- sp::SpatialPoints(matrix(c(4.401168, 51.220305), nrow=1), 
+                                 proj4string = sp::CRS(&quot;+proj=longlat +datum=WGS84&quot;))
+
+
+# create a dataframe with 10 minute time intervals for a whole year
+solar_position_df &lt;- tibble(
+  timestamp = seq(from = ymd_hms(&quot;1970-01-01 00:00:00&quot;, tz = &quot;UTC&quot;),
+                  to = ymd_hms(&quot;1970-12-31 23:50:00&quot;, tz = &quot;UTC&quot;),
+                  by = &#39;10 min&#39;))%&gt;%
+  # calculate the solar position for each timestamp at my home coordinates
+  # the solarpos function from the maptools package returns a list with 2 elements
+  # 1 = the solar azimuth angle (degrees from north), 2 = the solar altitude
+  mutate(solar_azimuth_angle = solarpos(home_coords, timestamp)[,1],
+         solar_elevation = solarpos(home_coords, timestamp)[,2])%&gt;%
+  # we only care about solar elevations &gt; 0
+  filter(solar_elevation &gt; 0)%&gt;%
+  # The solar panel dataframe uses UTC + 1h 
+  # so lets set this data up the same way
+  mutate(timestamp = timestamp + 3600)
+
+# visualise the position of the sun per hour and give each month a colour
+solar_position_df%&gt;%
+  # only visualise values on round hours
+  filter(minute(timestamp) == 0)%&gt;%
+  ggplot(aes(x = solar_azimuth_angle, 
+             y = solar_elevation, 
+             colour = month(timestamp, label = T, abbr = F)))+
+  geom_point(alpha = 0.8)+
+  scale_x_continuous(breaks = seq(45, 315, 45), 
+                     labels = c(&quot;Northwest&quot;, &quot;West&quot;, 
+                                &quot;Southwest&quot;, &quot;South&quot;, 
+                                &quot;Southeast&quot;, &quot;East&quot;, 
+                                &quot;Northeast&quot;))+
+  viridis::scale_colour_viridis(discrete = T)+
+  scale_y_continuous(expand = c(0, 0))+
+  labs(y = &quot;Solar elevation (°)&quot;)+
+  theme_minimal()+
+  theme(text = element_text(colour = &quot;grey40&quot;),
+        strip.text.y = element_text(angle = 0, hjust = 0),
+        axis.title.x = element_blank(),
+        axis.ticks = element_line(colour = &quot;grey40&quot;, size = rel(0.4)),
+        legend.title = element_blank(),
+        legend.justification = &#39;top&#39;,
+        panel.grid.minor = element_blank(),
+        panel.background = element_rect(fill = NA, colour = &quot;grey40&quot;))</code></pre>
+<p><img src="/blog/2017-12-24-solar-panel-analysis-part-3-Scanning-for-objects_files/figure-html/unnamed-chunk-2-1.png" width="1620" /> These are the Sun’s positions throughout the year on each round hour (the 10 minute intervals are a bit too much to plot). The resulting shapes are called <a href="https://en.wikipedia.org/wiki/Analemma">analemmas</a> and they are really interesting. Back in ancient times they gave astronomers headaches since they cause small deviations in the time read from sundials throughout the year. The issue was eventually resolved when they came up with the <a href="https://en.wikipedia.org/wiki/Equation_of_time">equation of time</a>. I recommend a dive down this Wikipedia rabbit hole but for now, let’s get back to our solar panel data!</p>
+</div>
+<div id="modelling-maximal-power-output" class="section level3">
+<h3>Modelling maximal power output</h3>
+<p>We want a model that produces nice, symmetrical, bell shaped curves that are bigger in summer and smaller in winter. To do this we have to think about what is actually causing the variation in power yield. In winter the Sun transfers less energy to the panels because of it’s lower elevation but what exactly causes this power loss?</p>
+<div id="energy-loss-due-to-spreading" class="section level4">
+<h4>Energy loss due to spreading</h4>
+<p>Image you carry a flashlight in a dark room. When you point it directly at the wall you get a small circle that is intensely lit. However, if you stand close to the wall and point the flashlight somewhat sideways you light a bigger surface. The energy emitted by the flashlight is spread out and each square centimeter in the lit area now receives less energy. We can calculate this effect with <strong><code>cos(pi/2 - angle)</code></strong>. When we transform a 90° angle to radials we get <strong><code>pi/2</code></strong> and when we enter this in the function we get the cosine of zero which is 1 or 100% spreading efficiency. In Belgium the Sun has a maximal elevation of 62° which has a spreading efficiency of 88%. During the winter solstice the Sun only reaches 15.3° at noon which has a spreading efficiency of only 26%. Fortunately, the panels themselves are somewhat inclined (20°) towards the south so that even in winter the angle of arrival is closer to 35° (57% efficiency). However, this inclination causes a more complex spreading effect because the panels now point in a particular direction. Both effects are estimated in the code below.</p>
+<pre class="r"><code># angles in degrees to angles in radials
+# the &#39;_deg&#39; part of the variable name shows it&#39;s in degrees
+deg_to_rad &lt;- function(angle_deg){pi * angle_deg / 180}
+
+# vertical spreading effect
+get_vertical_spreading &lt;- function(angle_deg){
+  cos(pi / 2 - deg_to_rad(angle_deg))
+  }
+
+# When the Sun points to the south we should add 20° to the
+# solar elevation to get the correct angle since the panels
+# are inclined by 20° towards the south.
+# However if the Sun were to shine from the north we should
+# detract 20° from the elevation. The negative cosine 
+# should do just this for us.
+adjust_horizontal_angle &lt;- function(angle_deg, azimuth_deg){
+  angle_deg + 20 * -cos(deg_to_rad(azimuth_deg))
+}</code></pre>
+</div>
+<div id="energy-loss-due-to-traveling-through-the-atmosphere" class="section level4">
+<h4>Energy loss due to traveling through the atmosphere</h4>
+<p>A second, less straightforward, effect that decreases the energy transfer from the Sun to the panels at lower solar elevations is the fact that the distance traveled through the atmosphere becomes larger. As the light rays make their way through this mass of air they often collide with the molecules and become scattered. It is this <a href="https://en.wikipedia.org/wiki/Rayleigh_scattering">effect</a> that makes sunsets so beautiful and makes the sky above above us appear blue instead of black. Some clever people have studied this effect in great detail and we can take their <a href="https://en.wikipedia.org/wiki/Air_mass_(solar_energy)#math_I.1">equations</a> from Wikipedia to learn that at a 90° angle the energy per square meter is about 1051 Watts. At 62° (Belgium summer solstice) we get 1019 Watts/m² which is still quite good. However at 15.3° in winter we fall back to 628 Watts/m². While we lose a lot of energy due to this scattering effect a little bit may per recuperated. Some of the scattered light from rays passing overhead now reaches our panels.</p>
+<pre class="r"><code># calulate Air Mass (AM) according to Karsten &amp; Young 
+# https://en.wikipedia.org/wiki/Air_mass_(solar_energy)#math_I.1
+# https://en.wikipedia.org/wiki/Solar_irradiance
+get_air_mass &lt;- function(angle_deg){
+  1 / (cos(deg_to_rad(angle_deg)) + 0.506 * (96.08 - angle_deg) ^ -1.6364)
+}
+ 
+# this function calculates how much power (W/m²) 
+# is left in sun rays reaching the surface
+# the only effect weakening solar power is air mass at this point
+# incoming solar power on top of atmosphere = 1366 W/m²
+get_solar_intensity &lt;- function(angle_deg){
+  # extract from 90 to get correct z angle (see wikipedia)
+  1.1 * 1366 * 0.7 ^ get_air_mass(90 - angle_deg) ^ 0.678
+}
+
+# Raw estimation of the scattered light reaching the panels
+get_scatterlight_intensity &lt;- function(angle_deg){
+  
+  # The solar intensity of rays passing overhead 
+  solar_intensity &lt;- get_solar_intensity(angle_deg + 3)
+  # The percentage of max energy (at 90°) that remains
+  pct_intensity &lt;- solar_intensity / get_solar_intensity(90)
+  # Scattered light is a fraction of the lost energy 
+  scatter_intensity &lt;- solar_intensity * (1 - pct_intensity) * 0.15
+  
+  return(scatter_intensity)
+}</code></pre>
+</div>
+<div id="putting-it-all-together" class="section level4">
+<h4>Putting it all together</h4>
+<p>Now that we have created functions for the most important effects at play it’s time to put them together and create a master function that will estimate the maximal power yield of the solar installation when we feed it the position of the sun.</p>
+<pre class="r"><code>solar_position_to_max_power &lt;- function(angle_deg, 
+                                        azimuth_angle_deg){
+  
+  # how much of the solar intensity is left 
+  # after travelling through the air mass?
+  solar_intensity &lt;- get_solar_intensity(angle_deg)
+  
+  # light spreading out because of sideways spreading 
+  horizontal_angle_adjusted &lt;- adjust_horizontal_angle(angle_deg, 
+                                                       azimuth_angle_deg)
+  
+  # panels are inclined at 20°
+  vertical_spreading &lt;- get_vertical_spreading(horizontal_angle_adjusted)
+  
+  surface_power &lt;- {solar_intensity * vertical_spreading + 
+                    get_scatterlight_intensity(angle_deg)}
+  
+  # 7 panels with 1.6 m²
+  panel_surface &lt;- 1.6 * 7 
+  
+  # 16% efficiency of panels
+  efficieny &lt;- 0.18
+  
+  # eventual power is the panel surface times 
+  # the power left in the Sun&#39;s rays on the panel times
+  # the efficiency of the panels
+  max_plant_power &lt;- panel_surface * surface_power * efficieny 
+  
+  return(max_plant_power)
+}</code></pre>
+<p>We can now call this function on the dataset with solar positions for a full year which we created earlier on.</p>
+<pre class="r"><code>solar_position_max_power_df &lt;- solar_position_df%&gt;%
+  # calculate the maximal power of the solar panels per timestamp
+  # we need this to check if the maximal observed power is much lower 
+  # than the maximal theoretical power
+  mutate(max_power = solar_position_to_max_power(solar_elevation, 
+                                                 solar_azimuth_angle))%&gt;%
+  filter(max_power &gt;= 0)</code></pre>
+<p>Now let’s bring both datasets together and calculate the ratio between the power observed and the estimated maximal power.</p>
+<pre class="r"><code>combined_df &lt;- solarplant_df%&gt;%
+  # add the solar plant data to the solar position data
+  # standardise the time to 1970 to allow joing the solar position dataset
+  mutate(timestamp_basic = lubridate::origin + (yday(timestamp) - 1) * 3600 * 24 + 
+                           hour(timestamp) * 3600 + minute(timestamp) * 60)%&gt;%
+  right_join(solar_position_max_power_df, by = c(&quot;timestamp_basic&quot; = &quot;timestamp&quot;))%&gt;%
+  replace_na(list(power = 0))%&gt;%
+  # efficiency is power / max power but can&#39;t be higher than 1 (100%)
+  mutate(efficiency = ifelse(power / max_power &gt; 1, 1, power / max_power),
+         # some time variables we need later on
+         hour = hour(timestamp) + minute(timestamp) / 60,
+         week_date = round_date(timestamp_basic, unit = &quot;week&quot;))</code></pre>
+<p>To check if our theoretical model delivers acceptable results let’s visualize both observed and estimated maximal power for some sunny days in both winter and summer.</p>
+<pre class="r"><code>combined_df%&gt;%
+  mutate(date = as_date(timestamp))%&gt;%
+  filter(date %in% as_date(c(&quot;2017-06-01&quot;, &quot;2016-12-04&quot;)))%&gt;%
+  ggplot(aes(x = hour(timestamp) + minute(timestamp) / 60, y = max_power))+
+  geom_line()+
+  geom_point(aes(y = power))+
+  facet_wrap(~date)+
+  labs(y = &#39;Power (W)&#39;,
+       x = &#39;Time of day (h)&#39;)+
+  theme_minimal()+
+  theme(text = element_text(colour = &quot;grey40&quot;),
+        strip.text.x = element_text(colour = &quot;grey40&quot;),
+        panel.grid.minor = element_blank(),
+        panel.border = element_rect(colour = &quot;grey40&quot;, 
+                                     size = rel(0.3),
+                                     fill = NA))</code></pre>
+<p><img src="/blog/2017-12-24-solar-panel-analysis-part-3-Scanning-for-objects_files/figure-html/unnamed-chunk-8-1.png" width="1080" /> As you can see our theoretical estimation fits the observed values quite well both in winter and summer. While not perfect, this estimation should now allow us to detect solar positions that never result in maximal efficiency values due to an obstacle blocking the light.</p>
+</div>
+<div id="visualizing-maximal-efficieny-per-solar-position" class="section level4">
+<h4>Visualizing maximal efficieny per solar position</h4>
+<p>Most of the time when the panels yield less than what is theoretically possible, clouds are spoiling the party. To filter out this noise and let the effect of stationary objects emerge we will look at the maximal efficiency for each time of the day, per week of the year. Since we have 2 years of solar data in the dataset we now have registered 14 days for each week of the year. For clouds to appear as a stationary object in our analysis it would have to be cloudy on a particular time of the day for all 14 days measured. Even for Belgium this is rarely the case.</p>
+<pre class="r"><code>max_efficiency_df &lt;- combined_df%&gt;%
+  # for each week of the year we hope the sun shined at 
+  # least once per 10 minute interval this way we can get 
+  # an accurate maximal efficiency estimate by grouping 
+  # on the week and hour variables and calculating
+  # the maximal values for all relevant variables
+  group_by(week_date, hour)%&gt;%
+  summarise(solar_azimuth_angle = max(solar_azimuth_angle),
+            solar_elevation = max(solar_elevation),
+            efficiency = max(efficiency))%&gt;%
+  ungroup()
+
+max_efficiency_df%&gt;%
+  ggplot(aes(x = solar_azimuth_angle, 
+             y = solar_elevation, 
+             colour = efficiency, 
+             alpha = efficiency,
+             size = efficiency))+
+  geom_point()+
+  scale_color_gradient2(low = &quot;darkgreen&quot;, 
+                        mid = &quot;lightblue&quot;, 
+                        high = &quot;lightblue&quot;, 
+                        midpoint = 0.7, 
+                        labels = scales::percent)+
+  scale_alpha_continuous(range = c(1, 0.2), 
+                        labels = scales::percent)+
+  scale_size_continuous(range = c(8, 1), 
+                         labels = scales::percent)+
+  scale_x_continuous(breaks = seq(45, 315, 45), 
+                     expand = c(0, 0),
+                     labels = c(&quot;Northeast&quot;, &quot;East&quot;, 
+                                &quot;Southeast&quot;, &quot;South&quot;, 
+                                &quot;Southwest&quot;, &quot;West&quot;,
+                                &quot;Northwest&quot;))+
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 65))+
+  labs(y = &quot;Solar elevation (°)&quot;)+
+  theme(text = element_text(colour = &quot;grey40&quot;),
+        panel.background = element_blank(),
+        panel.grid.minor = element_blank(),
+        axis.title.x = element_blank(),
+        legend.key = element_blank(),
+        legend.justification = &#39;top&#39;)+
+  guides(colour = guide_legend(title.position = &quot;top&quot;, 
+                               reverse = T,
+                               ncol = 1),
+         alpha = guide_legend(title.position = &quot;top&quot;, 
+                              reverse = T,
+                               ncol = 1),
+         size = guide_legend(title.position = &quot;top&quot;, 
+                             reverse = T,
+                               ncol = 1))</code></pre>
+<p><img src="/blog/2017-12-24-solar-panel-analysis-part-3-Scanning-for-objects_files/figure-html/unnamed-chunk-9-1.png" width="1800" /> As you can see I’ve taken some artistic liberty while creating this plot. Low maximal efficiencies are colored in green and high values maximal values get a blue color + higher transparency and smaller circles.</p>
+<p>To verify this result I got up on my roof and took a panoramic picture. Let’s first look at this picture without the data. <img src="/figs/roof_panorama.jpg" alt="Roof_panorama" /></p>
+<p>And now let’s use it as the background for our plot.</p>
+<pre class="r"><code>library(jpeg)
+library(grid)
+img &lt;- jpeg::readJPEG(rt$find_file(&quot;static/figs/roof_panorama.jpg&quot;))
+
+g &lt;- rasterGrob(img, interpolate = TRUE) 
+
+max_efficiency_df%&gt;%
+  ggplot(aes(x = solar_azimuth_angle, 
+             y = solar_elevation, 
+             colour = efficiency, 
+             alpha = efficiency, 
+             size = efficiency))+
+  annotation_custom(g, xmin = -50, xmax = 320, 
+                    ymin = -15, ymax = 65)+
+  geom_point()+
+  scale_color_gradient2(low = &quot;darkgreen&quot;, 
+                        mid = &quot;lightblue&quot;, 
+                        high = &quot;lightblue&quot;, 
+                        midpoint = 0.7, 
+                        labels = scales::percent)+
+  scale_alpha_continuous(range = c(1, 0.2), 
+                        labels = scales::percent)+
+  scale_size_continuous(range = c(8, 1), 
+                         labels = scales::percent)+
+  scale_x_continuous(breaks = seq(45, 315, 45), 
+                     labels = c(&quot;Northeast&quot;, &quot;East&quot;, 
+                                &quot;Southeast&quot;, &quot;South&quot;, 
+                                &quot;Southwest&quot;, &quot;West&quot;,
+                                &quot;Northwest&quot;))+
+  scale_y_continuous(expand = c(0, 0), limits = c(0, 65))+
+  labs(y = &quot;Solar elevation (°)&quot;)+
+  theme(text = element_text(colour = &quot;grey40&quot;),
+        panel.background = element_blank(),
+        panel.grid = element_blank(),
+        legend.position = &#39;none&#39;,
+        axis.title.x = element_blank())</code></pre>
+<p><img src="/blog/2017-12-24-solar-panel-analysis-part-3-Scanning-for-objects_files/figure-html/unnamed-chunk-10-1.png" width="1800" /></p>
+<p>Et voilà! The objects we detected do indeed match the trees we suspected all along. We’ve successfully used the Sun to scan the surroundings for objects using solar panel data! The panels estimate the tree to the east to be taller but this is because the picture was taken on the side of the roof furthest from the tree. To the panels on the other side of the roof the tree seems taller.</p>
+<p>I expect this to be the final post on this dataset and hope you enjoyed the analysis as much as I did. Time for a new pet project. Cheers!</p>
+</div>
+</div>

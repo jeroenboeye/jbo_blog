@@ -315,9 +315,6 @@ data_and_prediction &lt;- max_p_per_t%&gt;%
                         labels = c(&quot;Max power\nestimation&quot;,
                                    &quot;Actual (smoothed)\nmaximum power&quot;)))%&gt;%
   ggplot(aes(x = temperature, y = power_prediction, colour = model))+
-  # geom_hline(yintercept = 1820, color = &#39;red&#39;)+
-  # annotate(&quot;text&quot;, x = 14.5, y = 1880, 
-  #        label = &quot;Max power&quot;, color = &quot;red&quot;, fontface = &#39;bold&#39;)+
   geom_ribbon(data = data_and_prediction,
             aes(ymin = smoothed_power, y = smoothed_power,
                 ymax = smoother_max_power), 
@@ -357,8 +354,6 @@ temperature_and_efficiency%&gt;%
   geom_line()+
   scale_x_continuous(expand = c(0, 0), breaks = seq(0, 50, 5))+
   scale_y_continuous(expand = c(0, 0), labels = scales::percent)+
-  #scale_linetype(name = &quot;Efficiency&quot;)+
-  #scale_color_manual(values = c(&quot;orange&quot;, &quot;purple&quot;), name = &quot;Efficiency&quot;)+
   labs(y = &quot;Efficiency&quot;,
        x = &quot;Temperature °C&quot;,
        linetype = &quot;Efficiency&quot;)+
