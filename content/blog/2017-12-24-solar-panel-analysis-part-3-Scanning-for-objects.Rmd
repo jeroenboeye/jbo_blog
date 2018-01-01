@@ -6,6 +6,9 @@ slug: solar-panel-analysis-pt-3-Scanning-for-objects
 comments: true
 categories: [R]
 tags: [Solar, Photovoltaic, R]
+large_thumb: true
+img:
+    thumb: "/figs/scanning_for_objects.png"
 ---
 
 ```{r setup, include=FALSE}
@@ -18,7 +21,7 @@ options(width=80, dplyr.width = 150)
 
 ### Intro
 
-In the first post on my solar panel dataset we did some [exploration](https://www.jeroenboeye.com/blog/solar-panel-analysis-pt-1-exploration/) and found a number of interesting patterns. One of these was the effect of temperature on the efficiency of the panels which we investigated further in the [second post](https://www.jeroenboeye.com/blog/solar-panel-analysis-pt-2-temperature-and-efficiency/). Another interesting pattern found while exploring the data was that for a number of months the maximal power throughout the day did not follow the expected bell shape curve. Let's load the [data](https://github.com/jeroenboeye/jbo_blog/blob/master/static/files/solar_power.csv) and visualize the maximal values per time of the day for June and December so you get an idea of what I'm talking about.
+In the [first post](https://www.jeroenboeye.com/blog/solar-panel-analysis-pt-1-exploration/) on my solar panel dataset we did some exploration and found a number of interesting patterns. One of these was the effect of temperature on the efficiency of the panels which we investigated further in the [second post](https://www.jeroenboeye.com/blog/solar-panel-analysis-pt-2-temperature-and-efficiency/). Another interesting pattern found while exploring the data was that for a number of months the maximal power throughout the day did not follow the expected bell shape curve. Let's load the [data](https://github.com/jeroenboeye/jbo_blog/blob/master/static/files/solar_power.csv) and visualize the maximal values per time of the day for June and December so you get an idea of what I'm talking about.
 
 ```{r, fig.width=6, fig.height=3.5}
 library(rprojroot)
@@ -70,7 +73,7 @@ Looking at the highest values for each time of the day we get an asymmetrical sh
 
 ### Visualising the obscuring objects
 
-While I know that the trees are behind this pattern I was wondering if we could derive their location and shape from the data. If we could somehow get a value for the power loss for each timestamp in the dataset we should be able to couple this data to a position of the Sun at that time using the  **`solarpos`** function from the **`maptools`** package. Then we could create a panoramic picture where each pixel is a position of the sun throughout the year as seen by the panels. The solar positions that consistently yield little power should then match the trees.
+While I know that the trees are behind this pattern I was wondering if we could derive their location and shape from the data. If we could somehow get a value for the power loss for each timestamp in the dataset we should be able to couple this data to a position of the Sun at that time using the  **`solarpos`** function from the **`maptools`** package. Then we could create a panoramic picture where each pixel is a position of the Sun throughout the year as seen by the panels. The solar positions that consistently yield little power should then match the trees.
 This sounds like a fun idea, but to get there we first need to get an idea of the power loss per timestamp. We'll have to create a model that gives us the theoretical maximum output for each timestamp and then calculate the difference with the observed values.
 
 ### Visualising a full year of solar positions
@@ -102,7 +105,7 @@ solar_position_df <- tibble(
   # so lets set this data up the same way
   mutate(timestamp = timestamp + 3600)
 
-# visualise the position of the sun per hour and give each month a colour
+# visualise the position of the Sun per hour and give each month a colour
 solar_position_df%>%
   # only visualise values on round hours
   filter(minute(timestamp) == 0)%>%
@@ -111,10 +114,10 @@ solar_position_df%>%
              colour = month(timestamp, label = T, abbr = F)))+
   geom_point(alpha = 0.8)+
   scale_x_continuous(breaks = seq(45, 315, 45), 
-                     labels = c("Northwest", "West", 
-                                "Southwest", "South", 
-                                "Southeast", "East", 
-                                "Northeast"))+
+                     labels = c("Northeast", "East", 
+                                "Southeast", "South", 
+                                "Southwest", "West",
+                                "Northwest"))+
   viridis::scale_colour_viridis(discrete = T)+
   scale_y_continuous(expand = c(0, 0))+
   labs(y = "Solar elevation (°)")+
@@ -178,7 +181,7 @@ get_air_mass <- function(angle_deg){
 }
  
 # this function calculates how much power (W/m²) 
-# is left in sun rays reaching the surface
+# is left in Sun rays reaching the surface
 # the only effect weakening solar power is air mass at this point
 # incoming solar power on top of atmosphere = 1366 W/m²
 get_solar_intensity <- function(angle_deg){
@@ -202,7 +205,7 @@ get_scatterlight_intensity <- function(angle_deg){
 
 #### Putting it all together
 
-Now that we have created functions for the most important effects at play it's time to put them together and create a master function that will estimate the maximal power yield of the solar installation when we feed it the position of the sun.
+Now that we have created functions for the most important effects at play it's time to put them together and create a master function that will estimate the maximal power yield of the solar installation when we feed it the position of the Sun.
 ```{r}
 solar_position_to_max_power <- function(angle_deg, 
                                         azimuth_angle_deg){
@@ -297,7 +300,7 @@ Most of the time when the panels yield less than what is theoretically possible,
 
 ```{r, fig.width=10, fig.height=4}
 max_efficiency_df <- combined_df%>%
-  # for each week of the year we hope the sun shined at 
+  # for each week of the year we hope the Sun shined at 
   # least once per 10 minute interval this way we can get 
   # an accurate maximal efficiency estimate by grouping 
   # on the week and hour variables and calculating
@@ -351,7 +354,7 @@ max_efficiency_df%>%
 As you can see I've taken some artistic liberty while creating this plot. Low maximal efficiencies are colored in green and high values maximal values get a blue color + higher transparency and smaller circles.
 
 To verify this result I got up on my roof and took a panoramic picture. Let's first look at this picture without the data.
-![Roof_panorama](/figs/roof_panorama.jpg)
+![Roof_panorama](/figs/roof_panorama_sample.png)
 
 And now let's use it as the background for our plot.
 
