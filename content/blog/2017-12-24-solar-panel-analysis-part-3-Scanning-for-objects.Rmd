@@ -1,7 +1,7 @@
 ---
 title: 'Solar panel analysis pt 3: Scanning for objects'
 author: Jeroen Boeye
-date: '2018-01-01'
+date: '2018-01-02'
 slug: solar-panel-analysis-pt-3-Scanning-for-objects
 comments: true
 categories: [R]
@@ -21,7 +21,7 @@ options(width=80, dplyr.width = 150)
 
 ### Intro
 
-In the [first post](https://www.jeroenboeye.com/blog/solar-panel-analysis-pt-1-exploration/) on my solar panel dataset we did some exploration and found a number of interesting patterns. One of these was the effect of temperature on the efficiency of the panels which we investigated further in the [second post](https://www.jeroenboeye.com/blog/solar-panel-analysis-pt-2-temperature-and-efficiency/). Another interesting pattern found while exploring the data was that for a number of months the maximal power throughout the day did not follow the expected bell shape curve. Let's load the [data](https://github.com/jeroenboeye/jbo_blog/blob/master/static/files/solar_power.csv) and visualize the maximal values per time of the day for June and December so you get an idea of what I'm talking about.
+In the [first post](https://www.jeroenboeye.com/blog/solar-panel-analysis-pt-1-exploration/) on my solar panel dataset we did some exploration and found a number of interesting patterns. One of these was the effect of temperature on the efficiency of the panels which we investigated further in the [second post](https://www.jeroenboeye.com/blog/solar-panel-analysis-pt-2-temperature-and-efficiency/). Another interesting pattern found while exploring the data was that for a number of months the maximal power throughout the day did not follow the expected bell shaped curve. Let's load the [data](https://github.com/jeroenboeye/jbo_blog/blob/master/static/files/solar_power.csv) and visualize the maximal values per time of the day for June and December so you get an idea of what I'm talking about.
 
 ```{r, fig.width=6, fig.height=3.5}
 library(rprojroot)
@@ -73,12 +73,12 @@ Looking at the highest values for each time of the day we get an asymmetrical sh
 
 ### Visualising the obscuring objects
 
-While I know that the trees are behind this pattern I was wondering if we could derive their location and shape from the data. If we could somehow get a value for the power loss for each timestamp in the dataset we should be able to couple this data to a position of the Sun at that time using the  **`solarpos`** function from the **`maptools`** package. Then we could create a panoramic picture where each pixel is a position of the Sun throughout the year as seen by the panels. The solar positions that consistently yield little power should then match the trees.
+While I know that the trees are behind this pattern I was wondering if we could derive their location and shape from the data. If we could somehow get a value for the power loss for each timestamp in the dataset we should be able to couple this data to a position of the Sun at that time using the  **`solarpos`** function from the **`maptools`** package. Then we could create a panoramic picture where each pixel is a position of the Sun throughout the year as seen by the panels. The solar positions that consistently yield too little power should then match the trees.
 This sounds like a fun idea, but to get there we first need to get an idea of the power loss per timestamp. We'll have to create a model that gives us the theoretical maximum output for each timestamp and then calculate the difference with the observed values.
 
 ### Visualising a full year of solar positions
 
-Before we dive into modelling the maximal power outputs let's look at the solar positions we will bind the power loss data to. We get all solar positions for a full year in 10 minute intervals and filter out the values where the Sun is below the horizon (negative elevation).
+Before we dive into modelling the maximal power outputs let's look at the solar positions we will bind the power loss data to. We get all solar positions for a full year in 10 minute intervals and filter out the values where the Sun is below the horizon.
 ```{r, fig.width=9, fig.height=3.5}
 library(sp)
 library(maptools)
@@ -135,11 +135,11 @@ These are the Sun's positions throughout the year on each round hour (the 10 min
 
 ### Modelling maximal power output
 
-We want a model that produces nice, symmetrical, bell shaped curves that are bigger in summer and smaller in winter. To do this we have to think about what is actually causing the variation in power yield. In winter the Sun transfers less energy to the panels because of it's lower elevation but what exactly causes this power loss? 
+We want a model that produces nice, symmetrical, bell shaped curves that are bigger in summer and smaller in winter. We could go for an approach where we simply try to create the expected curves using, for example, a normal distribution and some seasonal variable. While this approach would certainly work, it would treat the underlying effects as a black box. Wouldn't it be more interesting if we could actualy simulate the effects at play and let the expected curve emerge by combining them? To do this we have to think about what is behind the variation in power yield. In winter the Sun transfers less energy to the panels because of it's lower elevation but what exactly causes this power loss? 
 
 #### Energy loss due to spreading
 
-Image you carry a flashlight in a dark room. When you point it directly at the wall you get a small circle that is intensely lit. However, if you stand close to the wall and point the flashlight somewhat sideways you light a bigger surface. The energy emitted by the flashlight is spread out and each square centimeter in the lit area now receives less energy. We can calculate this effect with **`cos(pi/2 - angle)`**. When we transform a 90° angle to radials we get **`pi/2`** and when we enter this in the function we get the cosine of zero which is 1 or 100% spreading efficiency. In Belgium the Sun has a maximal elevation of 62° which has a spreading efficiency of 88%. During the winter solstice the Sun only reaches 15.3° at noon which has a spreading efficiency of only 26%. Fortunately, the panels themselves are somewhat inclined (20°) towards the south so that even in winter the angle of arrival is closer to 35° (57% efficiency). However, this inclination causes a more complex spreading effect because the panels now point in a particular direction. Both effects are estimated in the code below.
+Image you carry a flashlight in a dark room. When you point it directly at the wall (90° angle) you get a small circle that is intensely lit. However, if you stand close to the wall and point the flashlight somewhat sideways you light a bigger surface. The same energy emitted by the flashlight is now spread out and each square centimeter in the lit area now receives less. We can calculate this effect with **`cos(pi/2 - angle)`**. When we transform a 90° angle to radials we get **`pi/2`** and when we enter this in the function we get the cosine of zero which is 1 or 100% spreading efficiency. In Belgium the Sun has a maximal elevation of 62° which has a spreading efficiency of 88%. During the winter solstice the Sun only reaches 15.3° at noon which has a spreading efficiency of only 26%. Fortunately, the panels themselves are somewhat inclined (20°) towards the south so that even in winter the angle of arrival is closer to 35° (57% efficiency). However, this inclination results in a more complex spreading effect because the panels now point in a particular direction. Both effects are estimated in the code below.
 
 ```{r}
 
@@ -271,7 +271,7 @@ combined_df <- solarplant_df%>%
 
 ```
 
-To check if our theoretical model delivers acceptable results let's visualize both observed and estimated maximal power for some sunny days in both winter and summer.
+To check if our theoretical model delivers acceptable results let's visualize both observed and estimated maximal power for some sunny days in winter and summer.
 ```{r, fig.width=6, fig.height=3.5}
 combined_df%>%
   mutate(date = as_date(timestamp))%>%

@@ -1,7 +1,7 @@
 ---
 title: 'Solar panel analysis pt 3: Scanning for objects'
 author: Jeroen Boeye
-date: '2018-01-01'
+date: '2018-01-02'
 slug: solar-panel-analysis-pt-3-Scanning-for-objects
 comments: true
 categories: [R]
@@ -15,7 +15,7 @@ img:
 
 <div id="intro" class="section level3">
 <h3>Intro</h3>
-<p>In the <a href="https://www.jeroenboeye.com/blog/solar-panel-analysis-pt-1-exploration/">first post</a> on my solar panel dataset we did some exploration and found a number of interesting patterns. One of these was the effect of temperature on the efficiency of the panels which we investigated further in the <a href="https://www.jeroenboeye.com/blog/solar-panel-analysis-pt-2-temperature-and-efficiency/">second post</a>. Another interesting pattern found while exploring the data was that for a number of months the maximal power throughout the day did not follow the expected bell shape curve. Let’s load the <a href="https://github.com/jeroenboeye/jbo_blog/blob/master/static/files/solar_power.csv">data</a> and visualize the maximal values per time of the day for June and December so you get an idea of what I’m talking about.</p>
+<p>In the <a href="https://www.jeroenboeye.com/blog/solar-panel-analysis-pt-1-exploration/">first post</a> on my solar panel dataset we did some exploration and found a number of interesting patterns. One of these was the effect of temperature on the efficiency of the panels which we investigated further in the <a href="https://www.jeroenboeye.com/blog/solar-panel-analysis-pt-2-temperature-and-efficiency/">second post</a>. Another interesting pattern found while exploring the data was that for a number of months the maximal power throughout the day did not follow the expected bell shaped curve. Let’s load the <a href="https://github.com/jeroenboeye/jbo_blog/blob/master/static/files/solar_power.csv">data</a> and visualize the maximal values per time of the day for June and December so you get an idea of what I’m talking about.</p>
 <pre class="r"><code>library(rprojroot)
 library(tidyverse)
 library(lubridate)
@@ -63,11 +63,11 @@ solarplant_df%&gt;%
 </div>
 <div id="visualising-the-obscuring-objects" class="section level3">
 <h3>Visualising the obscuring objects</h3>
-<p>While I know that the trees are behind this pattern I was wondering if we could derive their location and shape from the data. If we could somehow get a value for the power loss for each timestamp in the dataset we should be able to couple this data to a position of the Sun at that time using the <strong><code>solarpos</code></strong> function from the <strong><code>maptools</code></strong> package. Then we could create a panoramic picture where each pixel is a position of the Sun throughout the year as seen by the panels. The solar positions that consistently yield little power should then match the trees. This sounds like a fun idea, but to get there we first need to get an idea of the power loss per timestamp. We’ll have to create a model that gives us the theoretical maximum output for each timestamp and then calculate the difference with the observed values.</p>
+<p>While I know that the trees are behind this pattern I was wondering if we could derive their location and shape from the data. If we could somehow get a value for the power loss for each timestamp in the dataset we should be able to couple this data to a position of the Sun at that time using the <strong><code>solarpos</code></strong> function from the <strong><code>maptools</code></strong> package. Then we could create a panoramic picture where each pixel is a position of the Sun throughout the year as seen by the panels. The solar positions that consistently yield too little power should then match the trees. This sounds like a fun idea, but to get there we first need to get an idea of the power loss per timestamp. We’ll have to create a model that gives us the theoretical maximum output for each timestamp and then calculate the difference with the observed values.</p>
 </div>
 <div id="visualising-a-full-year-of-solar-positions" class="section level3">
 <h3>Visualising a full year of solar positions</h3>
-<p>Before we dive into modelling the maximal power outputs let’s look at the solar positions we will bind the power loss data to. We get all solar positions for a full year in 10 minute intervals and filter out the values where the Sun is below the horizon (negative elevation).</p>
+<p>Before we dive into modelling the maximal power outputs let’s look at the solar positions we will bind the power loss data to. We get all solar positions for a full year in 10 minute intervals and filter out the values where the Sun is below the horizon.</p>
 <pre class="r"><code>library(sp)
 library(maptools)
 library(viridis)
@@ -122,10 +122,10 @@ solar_position_df%&gt;%
 </div>
 <div id="modelling-maximal-power-output" class="section level3">
 <h3>Modelling maximal power output</h3>
-<p>We want a model that produces nice, symmetrical, bell shaped curves that are bigger in summer and smaller in winter. To do this we have to think about what is actually causing the variation in power yield. In winter the Sun transfers less energy to the panels because of it’s lower elevation but what exactly causes this power loss?</p>
+<p>We want a model that produces nice, symmetrical, bell shaped curves that are bigger in summer and smaller in winter. We could go for an approach where we simply try to create the expected curves using, for example, a normal distribution and some seasonal variable. While this approach would certainly work, it would treat the underlying effects as a black box. Wouldn’t it be more interesting if we could actualy simulate the effects at play and let the expected curve emerge by combining them? To do this we have to think about what is behind the variation in power yield. In winter the Sun transfers less energy to the panels because of it’s lower elevation but what exactly causes this power loss?</p>
 <div id="energy-loss-due-to-spreading" class="section level4">
 <h4>Energy loss due to spreading</h4>
-<p>Image you carry a flashlight in a dark room. When you point it directly at the wall you get a small circle that is intensely lit. However, if you stand close to the wall and point the flashlight somewhat sideways you light a bigger surface. The energy emitted by the flashlight is spread out and each square centimeter in the lit area now receives less energy. We can calculate this effect with <strong><code>cos(pi/2 - angle)</code></strong>. When we transform a 90° angle to radials we get <strong><code>pi/2</code></strong> and when we enter this in the function we get the cosine of zero which is 1 or 100% spreading efficiency. In Belgium the Sun has a maximal elevation of 62° which has a spreading efficiency of 88%. During the winter solstice the Sun only reaches 15.3° at noon which has a spreading efficiency of only 26%. Fortunately, the panels themselves are somewhat inclined (20°) towards the south so that even in winter the angle of arrival is closer to 35° (57% efficiency). However, this inclination causes a more complex spreading effect because the panels now point in a particular direction. Both effects are estimated in the code below.</p>
+<p>Image you carry a flashlight in a dark room. When you point it directly at the wall (90° angle) you get a small circle that is intensely lit. However, if you stand close to the wall and point the flashlight somewhat sideways you light a bigger surface. The same energy emitted by the flashlight is now spread out and each square centimeter in the lit area now receives less. We can calculate this effect with <strong><code>cos(pi/2 - angle)</code></strong>. When we transform a 90° angle to radials we get <strong><code>pi/2</code></strong> and when we enter this in the function we get the cosine of zero which is 1 or 100% spreading efficiency. In Belgium the Sun has a maximal elevation of 62° which has a spreading efficiency of 88%. During the winter solstice the Sun only reaches 15.3° at noon which has a spreading efficiency of only 26%. Fortunately, the panels themselves are somewhat inclined (20°) towards the south so that even in winter the angle of arrival is closer to 35° (57% efficiency). However, this inclination results in a more complex spreading effect because the panels now point in a particular direction. Both effects are estimated in the code below.</p>
 <pre class="r"><code># angles in degrees to angles in radials
 # the &#39;_deg&#39; part of the variable name shows it&#39;s in degrees
 deg_to_rad &lt;- function(angle_deg){pi * angle_deg / 180}
@@ -231,7 +231,7 @@ get_scatterlight_intensity &lt;- function(angle_deg){
          # some time variables we need later on
          hour = hour(timestamp) + minute(timestamp) / 60,
          week_date = round_date(timestamp_basic, unit = &quot;week&quot;))</code></pre>
-<p>To check if our theoretical model delivers acceptable results let’s visualize both observed and estimated maximal power for some sunny days in both winter and summer.</p>
+<p>To check if our theoretical model delivers acceptable results let’s visualize both observed and estimated maximal power for some sunny days in winter and summer.</p>
 <pre class="r"><code>combined_df%&gt;%
   mutate(date = as_date(timestamp))%&gt;%
   filter(date %in% as_date(c(&quot;2017-06-01&quot;, &quot;2016-12-04&quot;)))%&gt;%
