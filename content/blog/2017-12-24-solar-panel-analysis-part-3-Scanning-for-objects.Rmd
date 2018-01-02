@@ -168,7 +168,7 @@ adjust_horizontal_angle <- function(angle_deg, azimuth_deg){
 #### Energy loss due to traveling through the atmosphere
 
 A second, less straightforward, effect that decreases the energy transfer from the Sun to the panels at lower solar elevations is the fact that the distance traveled through the atmosphere becomes larger. As the light rays make their way through this mass of air they often collide with the molecules and become scattered. It is this [effect](https://en.wikipedia.org/wiki/Rayleigh_scattering) that makes sunsets so beautiful and makes the sky above above us appear blue instead of black. 
-Some clever people have studied this effect in great detail and we can take their [equations](https://en.wikipedia.org/wiki/Air_mass_(solar_energy)#math_I.1) from Wikipedia to learn that at a 90° angle the energy per square meter is about 1051 Watts. At 62° (Belgium summer solstice) we get 1019 Watts/m² which is still quite good. However at 15.3° in winter we fall back to 628 Watts/m². While we lose a lot of energy due to this scattering effect a little bit may per recuperated. Some of the scattered light from rays passing overhead now reaches our panels. 
+Some clever people have studied this effect in great detail and we can take their [equations](https://en.wikipedia.org/wiki/Air_mass_(solar_energy)#math_I.1) from Wikipedia to learn that at a 90° angle the energy per square meter is about 1051 Watts. At 62° (Belgium summer solstice) we get 1019 Watts/m² which is still quite good. However at 15.3° in winter we fall back to 628 Watts/m². While we lose a lot of energy due to this scattering effect a little bit may be recuperated. Some of the scattered light from rays passing overhead now reaches our panels. 
 
 
 ```{r}
