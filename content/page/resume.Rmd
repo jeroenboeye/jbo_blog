@@ -14,15 +14,40 @@ I enjoy getting insights out of data using programming tools. During my PhD I've
 
 ### Tools
 
-* R (main data science tool)
-* SQL (Spark, Impala, Oracle, MSSQL)
-* Python (Monte carlo individual based simulations + some experiments with scikit-learn & keras, hoping to use Pandas for data science in the future too)
-
+* R (Tidyverse adept, sparklyr)
+* SQL (Impala, Oracle, MSSQL, PostgreSQL)
+* Python (Monte carlo individual based simulations, Pandas, sklearn)
+* MongoDB
+* Spark (SparkSQL, streaming)
+* Jupyter
+* Docker
 
 ### Experience
 
+##### Senior Data Scientist, [Faktion](https://www.faktion.com/)
+2018-Present
+
+Sensor data analysis:
+
+* Building condition classifiers for high throughput telemtry sensor data
+* Setting up machine learning pipeline within lambda architecture.
+
+Natural Language Understanding:
+
+* Speech to text demo
+* Intent classification
+
+Video analysis:
+
+* Winner of the [2018 Vinci Energies Hackathon](https://www.faction.xyz/human-activity-capturer-and-klassifier-wins-first-prize-at-vinci-energies-hackathon/) detecting emergency situations from video data
+
+Consulting:
+
+* AI maturity assessment 
+* AI strategy development
+
 ##### Data Scientist, [MCS solutions](https://www.mcssolutions.com/)
-2015-present
+2015-2018
  
 Sensor data analysis:
 
@@ -58,7 +83,8 @@ Building complex individual based Monte Carlo models in a spatial context (using
 
 * [Machine Learning](/files/Coursera_machine_learning.pdf) by Andrew Ng, - Stanford Online (Coursera)
 * [R for data science](/figs/udemy_R_data_science.jpg) by Kirill Eremenko, - Udemy
-
+* [Python Data Scientist track](https://www.datacamp.com/statement-of-accomplishment/track/44a5321ee748768340d8691ca3964cf9bf11eedc) by various teachers, - Datacamp
+* [Python Programmer track](https://www.datacamp.com/statement-of-accomplishment/track/2f4f712243746878e61b9fd60e6bcb695b205ac0) by various teachers, - Datacamp
 
 ### Publications
 

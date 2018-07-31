@@ -85,3 +85,5 @@ hrefTargetBlank = true
 lang = "en"
 languageName = "English"
 weight = 1
+
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_files$", "_cache$"]
