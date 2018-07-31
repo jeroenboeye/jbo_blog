@@ -30,7 +30,7 @@ I enjoy getting insights out of data using programming tools. During my PhD I've
 Sensor data analysis:
 
 * Building condition classifiers for high throughput telemtry sensor data
-* Setting up machine learning pipeline within lambda architecture.
+* Setting up machine learning pipeline within lambda architecture
 
 Natural Language Understanding:
 
