@@ -8,7 +8,7 @@ categories: [Python]
 tags: [Population Dynamics, Simulation, Python]
 ---
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = FALSE, python.reticulate=FALSE, eval = FALSE)
+knitr::opts_chunk$set(echo = TRUE, python.reticulate=FALSE, eval = FALSE)
 ```
 
 ### Intro
