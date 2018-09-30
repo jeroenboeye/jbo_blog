@@ -16,7 +16,7 @@ tags: [Population Dynamics, Simulation, Python]
 </div>
 <div id="breaking-mendels-rules" class="section level3">
 <h3>Breaking Mendel’s rules</h3>
-<p>By default, genes have a 50% chance to be passed on from parent to offspring, since each individual has 2 copies of a gene and only one copy can be passed on to the next generation per parent. However, a number of <a href="https://en.wikipedia.org/wiki/Gene_drive">tricks</a> exist to rig this coinflip and make sure a particular copy is passed on. Genes that are not 50 but 100% sure to be transferred to offspring can spread in a population even when they make the individuals that carry them less healthy. The researchers used one of these tricks to boost the spread of a gene that can cause entire populations to collapse. The key to this gene’s potency is that it only starts affecting the population once it is already quite common in the gene pool. Only females that get a copy from both parents are struck with complete infertility. Males and females with a single copy are unaffected but, thanks to the researchers trick, are sure to pass on the gene to the next generation. This allows the gene to spread exponentially in the population until it is too late. At a certain point most individuals carry at least one copy of the gene and suddenly the next generation is in real trouble. Almost all of the offspring get a copy of the tampered gene from both parents and most females turn out infertile. Yet one generation later the process repeats and complete extinction is suddenly a real possibility.</p>
+<p>By default, genes have a 50% chance to be passed on from parent to offspring, since each individual has 2 copies of a gene and only one copy can be passed on to the next generation per parent. However, a number of <a href="https://en.wikipedia.org/wiki/Gene_drive">tricks</a> exist to rig this coinflip and make sure a particular copy is passed on. Genes that are not 50 but 100% sure to be transferred to offspring can spread in a population even when they make the individuals that carry them less healthy. The researchers used one of these tricks to boost the spread of a gene that can cause entire populations to collapse. The key to this gene’s potency is that it only starts affecting the population once it is already quite common in the gene pool. Only females that get an infected copy from both parents are struck with infertility, males and females with only a single infected copy are completely unaffected. However, thanks to the researchers trick, these infected individuals are sure to pass on the gene to their offspring. This allows the gene to spread exponentially in the population until it is too late. At a certain tipping point most individuals carry at least one copy of the gene and suddenly the next generation is in real trouble. Almost all of the offspring get a copy of the tampered gene from both parents and most females turn out infertile. Yet one generation later the process repeats and complete extinction is suddenly a real possibility.</p>
 <p>I found this idea to be intriguing and decided to create a simple object-oriented population dynamics model to see if I could replicate this phenomenon and learn something along the way.</p>
 </div>
 <div id="building-a-population-model" class="section level3">
@@ -163,8 +163,8 @@ def plot_simulation_results(results):
     results = dyn.main_loop(n_generations=20)[0]
     plot_simulation_results(results)</code></pre>
 <div class="figure">
-<img src="/figs/Mosquitos_extinct_100.png" alt="Mosquitos_extinct_100" />
-<p class="caption">Mosquitos_extinct_100</p>
+<img src="/figs/Mosquitos_extinct_100.png" />
+
 </div>
 <p>The number of infected mosquitos (red line) increases exponentially and then in a few generations crashes along with the rest of the population. Notice how the onset of the decline coincides with the number of individual with 2 copies of the infertility gene reaching almost half the population. In the 8th generation, all individuals are infected with at least 1 copy of the gene which means that in the 9th and final generation all individuals carry 2 copies of the gene, ruling out the existence of fertile females.</p>
 </div>
@@ -172,8 +172,8 @@ def plot_simulation_results(results):
 <h3>How many infected Mosquitos do you need to make this work?</h3>
 <p>While the malicious gene can spread exponentially in this population it does not always succeed in that goal. When the population is at an equilibrium size of about 10.000 individuals each has a chance of about 2% to survive and produce offspring. This low probability means that when we introduce too few infected individuals there is a chance that all of them will perish in the first generations due to bad luck in the lottery of life.</p>
 <div class="figure">
-<img src="/figs/Mosquitos_not_extinct.png" alt="Mosquitos_not_extinct_50" />
-<p class="caption">Mosquitos_not_extinct_50</p>
+<img src="/figs/Mosquitos_not_extinct.png" />
+
 </div>
 <p>In the graph above only 50 individuals were introduced and none of them made it past the 2% survival chance in the first generation. The effect of the number of infected individuals introduced on the population’s extinction probability is something that we can once again simulate. All we have to do is create a loop over a list with different infected mosquito group sizes and run each simulation a number of times (100) so that we can calculate an average extinction probability.</p>
 <pre class="python"><code>if __name__ == &#39;__main__&#39;:
@@ -208,8 +208,8 @@ def plot_simulation_results(results):
                       
     plot_meta_results(results)</code></pre>
 <div class="figure">
-<img src="/figs/Mosquitos_extinction_p_vs_infection_size.png" alt="Mosquitos_extinction_p_vs_infection_size" />
-<p class="caption">Mosquitos_extinction_p_vs_infection_size</p>
+<img src="/figs/Mosquitos_extinction_p_vs_infection_size.png" />
+
 </div>
 <p>When we increase the number of individuals introduced to about 3% of the whole population (300 individuals) extinction becomes inevitable since in all 100 simulations of this situation the population went extinct. However, these numbers don’t really say that much as they depend heavily on the assumptions I’ve made regarding the population dynamics.</p>
 </div>
