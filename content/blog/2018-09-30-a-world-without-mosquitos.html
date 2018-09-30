@@ -78,7 +78,7 @@ class Simulation:
                 # alternating sex, resulting in a 0.5 sex ratio
                 self.pop.extend(
                     [Mosquito(mother_gene_infected=sum(f.genes) &gt; 0,
-                              father_gene_infected=sum(mates[i].genes) &gt; 0,
+                              father_gene_infected=sum(mates[i].genes)&gt;0,
                               sex=[&#39;Male&#39;, &#39;Female&#39;][n % 2])
                      for n in range(np.random.poisson(100))])
 
@@ -108,7 +108,7 @@ class Simulation:
         # Count the number of infected individuals
         infected = len([m for m in self.pop if (sum(m.genes) &gt; 0)])
         # Count the number of double infected (homozygote) individuals
-        double_infected = len([m for m in self.pop if (sum(m.genes) == 2)])
+        double_infected = len([m for m in self.pop if (sum(m.genes)==2)])
         return [len(self.pop), infected, double_infected]
 
     def main_loop(self, n_generations):
@@ -166,7 +166,7 @@ def plot_simulation_results(results):
     # While there is randomness in our simulation,
     # for a particular random seed the outcome will be the same.
     np.random.seed(1)
-    # The number of uninfected mosquitos present in the 1st generation
+    # Number of uninfected mosquitos present in the 1st generation
     n_healthy_mosquitos = 10000
     n_infected_mosquitos = 100
     dyn = Simulation(n_healthy=n_healthy_mosquitos,
@@ -196,12 +196,12 @@ def plot_simulation_results(results):
     # While there is randomness in our simulation,
     # for a particular random seed the outcome will be the same.
     np.random.seed(1)
-    # The number of infected mosquitos to introduce in the 1st generation
+    # Number of infected mosquitos to introduce in the 1st generation
     infections_to_test = [1, 10, 25, 50, 75, 100, 150, 200, 300]
     # The number of simulations to run 
     # for each of the values in the list above
     n_simulations = 100
-    # The number of uninfected mosquitos present in the 1st generation
+    # Number of uninfected mosquitos present in the 1st generation
     n_healthy_mosquitos = 10000
 
     # create an array to store per-simulation setting results
