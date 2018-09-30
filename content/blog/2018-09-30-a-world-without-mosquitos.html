@@ -22,9 +22,7 @@ tags: [Population Dynamics, Simulation, Python]
 <div id="building-a-population-model" class="section level3">
 <h3>Building a population model</h3>
 <p>I prefer building object-oriented population models over purely mathematical ones as they can remain intuitive even when you add layers of complexity. In our mosquito population model, the lowest level is simply a mosquito object that holds the relevant details for an individual, being its sex and the genes it carries. Each individual has two copies of our gene of interest. I define the status of the gene as ‘infected’ (<strong><code>True</code></strong>) or not infected (<strong><code>False</code></strong>). While the term ‘infected’ is not technically correct I’ll keep using this analogy in this post for the sake of explainability.</p>
-<ul>
-<li>Side note, if you see a en empty box below and would like to see the code that should be there, try reloading the page. I’m looking for a fix..</li>
-</ul>
+<p><strong>Side note</strong>, if you see a en empty box below and would like to see the code that should be there, try reloading the page. I’m looking for a fix..</p>
 <pre class="python"><code>class Mosquito:
     &quot;&quot;&quot;Contains the details of each Mosquito&quot;&quot;&quot;
     def __init__(self, mother_gene_infected, father_gene_infected, sex):
@@ -40,66 +38,78 @@ class Simulation:
         Create a population (list of individuals)
         with a number of healthy and infected individuals
         &quot;&quot;&quot;
-        # The construct [&#39;Male&#39;, &#39;Female&#39;][x % 2] will make sure that
-        # we produce mosquitos of alternating sex, resulting in a 0.5 sex ratio
-        self.population = [Mosquito(mother_gene_infected=False,
-                                    father_gene_infected=False,
-                                    sex=[&#39;Male&#39;, &#39;Female&#39;][x % 2]) for x in range(n_healthy)]
-        self.population.extend([Mosquito(mother_gene_infected=True,
-                                         father_gene_infected=False,
-                                         sex=[&#39;Male&#39;, &#39;Female&#39;][x % 2]) for x in range(n_infected)])
+        # The construct [&#39;Male&#39;, &#39;Female&#39;][x % 2] will make
+        # sure that we produce mosquitos of alternating sex,
+        # resulting in a 0.5 sex ratio
+        self.pop = [Mosquito(mother_gene_infected=False,
+                             father_gene_infected=False,
+                             sex=[&#39;Male&#39;, &#39;Female&#39;][x % 2])
+                    for x in range(n_healthy)]
+        self.pop.extend([Mosquito(mother_gene_infected=True,
+                                  father_gene_infected=False,
+                                  sex=[&#39;Male&#39;, &#39;Female&#39;][x % 2])
+                         for x in range(n_infected)])
 
     def reproduction(self):
         &quot;&quot;&quot;
         Replace the old population by a new one
         &quot;&quot;&quot;
         # Divide the population into females and males.
-        # Females with 2 copies of the infected gene are infertile and not selected
-        females = [m for m in self.population if (m.sex == &#39;Female&#39;) and (sum(m.genes) &lt; 2)]
-        males = [m for m in self.population if m.sex == &#39;Male&#39;]
+        # Females with 2 copies of the infected gene are
+        # infertile and not selected
+        females = [m for m in self.pop if (m.sex == &#39;Female&#39;)
+                   and (sum(m.genes) &lt; 2)]
+        males = [m for m in self.pop if m.sex == &#39;Male&#39;]
 
-        # The old population is overwritten by an empty list and will be filled with new individuals
-        self.population = []
+        # The old population is overwritten by an empty list
+        # and will be filled with new individuals
+        self.pop = []
         # If there is at least one fertile female..
         if females:
             # select a random male mate for each female
-            lucky_males = np.random.choice(males, len(females))
+            mates = np.random.choice(males, len(females))
             for i, f in enumerate(females):
-                # Pass on genes to about 100 offspring (Poisson distribution).
-                # Since gene drive is in place, an infected gene will always be passed on.
-                # The construct [&#39;Male&#39;, &#39;Female&#39;][x % 2] will make sure that
-                # we produce mosquitos of alternating sex, resulting in a 0.5 sex ratio
-                self.population.extend([Mosquito(mother_gene_infected=sum(f.genes) &gt; 0,
-                                                 father_gene_infected=sum(lucky_males[i].genes) &gt; 0,
-                                                 sex=[&#39;Male&#39;, &#39;Female&#39;][n % 2]) for n in range(np.random.poisson(100))])
+                # Pass on genes to about 100 offspring
+                # (sample from Poisson distribution)
+                # Since gene drive is in place,
+                # an infected gene will always be passed on.
+                # The construct [&#39;Male&#39;, &#39;Female&#39;][x % 2]
+                # will make sure that we produce mosquitos of
+                # alternating sex, resulting in a 0.5 sex ratio
+                self.pop.extend(
+                    [Mosquito(mother_gene_infected=sum(f.genes) &gt; 0,
+                              father_gene_infected=sum(mates[i].genes) &gt; 0,
+                              sex=[&#39;Male&#39;, &#39;Female&#39;][n % 2])
+                     for n in range(np.random.poisson(100))])
 
     def density_dependent_survival(self, a=0.25, beta=0.5):
         &quot;&quot;&quot;
         Reduce the current population in a density-dependent manner.
-        When the population is big the survival rate is lower 
+        When the population is big the survival rate is lower
         than when the population is low.
         Surviving individuals will go on to reproduce
         &quot;&quot;&quot;
         # Single species density regulation based on Hassell &amp; Comins
-        survival_rate = (1 + a * len(self.population)) ** -beta
-        n_survivors = int(len(self.population) * survival_rate)
+        survival_rate = (1 + a * len(self.pop)) ** -beta
+        n_survivors = int(len(self.pop) * survival_rate)
 
-        # if there are survivors we select them randomly from the current population
+        # if there are survivors we select them randomly
+        # from the current population
         if n_survivors:
-            np.random.shuffle(self.population)
-            self.population = self.population[0:(n_survivors + 1)]
+            np.random.shuffle(self.pop)
+            self.pop = self.pop[0:(n_survivors + 1)]
         else:
-            self.population = []
+            self.pop = []
 
     def population_statistics(self):
         &quot;&quot;&quot;
         Calculate the population statistics of interest
         &quot;&quot;&quot;
         # Count the number of infected individuals
-        infected = len([m for m in self.population if (sum(m.genes) &gt; 0)])
+        infected = len([m for m in self.pop if (sum(m.genes) &gt; 0)])
         # Count the number of double infected (homozygote) individuals
-        double_infected = len([m for m in self.population if (sum(m.genes) == 2)])
-        return [len(self.population), infected, double_infected]
+        double_infected = len([m for m in self.pop if (sum(m.genes) == 2)])
+        return [len(self.pop), infected, double_infected]
 
     def main_loop(self, n_generations):
         &quot;&quot;&quot;
@@ -117,7 +127,7 @@ class Simulation:
 
         # return the per-generation evolution of the infection
         # and whether the population went extinct
-        return results_array, len(self.population) == 0</code></pre>
+        return results_array, len(self.pop) == 0</code></pre>
 <p>To plot the results of our model we’re going to need some visualisiation functions. These are included below for completeness.</p>
 <pre class="python"><code>import pylab
 import matplotlib.pyplot as plt
@@ -126,8 +136,8 @@ def plot_meta_results(results):
     &quot;&quot;&quot;Results plotter for results over multiple simulations&quot;&quot;&quot;
     # switch from proportions to percentages
     plt.plot(100 * results[:, 0], 100 * results[:, 1])
-    plt.xlabel(&#39;Population percentage of infected individuals introduced&#39;)
-    plt.ylabel(&#39;Percentage of simulations with extinction&#39;)
+    plt.xlabel(&#39;Population % of infected individuals introduced&#39;)
+    plt.ylabel(&#39;% of simulations with extinction&#39;)
     plt.show()
 
 def plot_simulation_results(results):
@@ -188,7 +198,8 @@ def plot_simulation_results(results):
     np.random.seed(1)
     # The number of infected mosquitos to introduce in the 1st generation
     infections_to_test = [1, 10, 25, 50, 75, 100, 150, 200, 300]
-    # The number of simulations to run for each of the values in the list above
+    # The number of simulations to run 
+    # for each of the values in the list above
     n_simulations = 100
     # The number of uninfected mosquitos present in the 1st generation
     n_healthy_mosquitos = 10000
@@ -204,8 +215,9 @@ def plot_simulation_results(results):
             dyn = Simulation(n_healthy=n_healthy_mosquitos,
                              n_infected=n_infected_mosquitos)
             n_extinct += dyn.main_loop(n_generations=20)[1]
-        # write to the results matrix what the proportion of infected vs healthy
-        # mosquitos was + the proportion of simulations where extinction took place
+        # write to the results matrix what the proportion of 
+        # infected vs healthy mosquitos was + the proportion of
+        # simulations where extinction took place
         results[i] = [n_infected_mosquitos / n_healthy_mosquitos,
                       n_extinct / n_simulations]
                       

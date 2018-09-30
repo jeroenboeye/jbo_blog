@@ -150,8 +150,8 @@ def plot_meta_results(results):
     """Results plotter for results over multiple simulations"""
     # switch from proportions to percentages
     plt.plot(100 * results[:, 0], 100 * results[:, 1])
-    plt.xlabel('Population percentage of infected individuals introduced')
-    plt.ylabel('Percentage of simulations with extinction')
+    plt.xlabel('Population % of infected individuals introduced')
+    plt.ylabel('% of simulations with extinction')
     plt.show()
 
 def plot_simulation_results(results):
@@ -217,7 +217,8 @@ if __name__ == '__main__':
     np.random.seed(1)
     # The number of infected mosquitos to introduce in the 1st generation
     infections_to_test = [1, 10, 25, 50, 75, 100, 150, 200, 300]
-    # The number of simulations to run for each of the values in the list above
+    # The number of simulations to run 
+    # for each of the values in the list above
     n_simulations = 100
     # The number of uninfected mosquitos present in the 1st generation
     n_healthy_mosquitos = 10000
@@ -233,8 +234,9 @@ if __name__ == '__main__':
             dyn = Simulation(n_healthy=n_healthy_mosquitos,
                              n_infected=n_infected_mosquitos)
             n_extinct += dyn.main_loop(n_generations=20)[1]
-        # write to the results matrix what the proportion of infected vs healthy
-        # mosquitos was + the proportion of simulations where extinction took place
+        # write to the results matrix what the proportion of 
+        # infected vs healthy mosquitos was + the proportion of
+        # simulations where extinction took place
         results[i] = [n_infected_mosquitos / n_healthy_mosquitos,
                       n_extinct / n_simulations]
                       
