@@ -14,9 +14,9 @@ I enjoy getting insights out of data using programming tools. During my PhD I've
 
 ### Tools
 
-* R (Tidyverse adept, sparklyr)
+* R (Tidyverse adept, sparklyr, Rmarkdown, ...)
+* Python (Monte carlo individual based simulations, Pandas, sklearn, ...)
 * SQL (Impala, Oracle, MSSQL, PostgreSQL)
-* Python (Monte carlo individual based simulations, Pandas, sklearn)
 * MongoDB
 * Spark (SparkSQL, streaming)
 * Jupyter
