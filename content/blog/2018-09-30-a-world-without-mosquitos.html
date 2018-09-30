@@ -22,6 +22,9 @@ tags: [Population Dynamics, Simulation, Python]
 <div id="building-a-population-model" class="section level3">
 <h3>Building a population model</h3>
 <p>I prefer building object-oriented population models over purely mathematical ones as they can remain intuitive even when you add layers of complexity. In our mosquito population model, the lowest level is simply a mosquito object that holds the relevant details for an individual, being its sex and the genes it carries. Each individual has two copies of our gene of interest. I define the status of the gene as ‘infected’ (<strong><code>True</code></strong>) or not infected (<strong><code>False</code></strong>). While the term ‘infected’ is not technically correct I’ll keep using this analogy in this post for the sake of explainability.</p>
+<ul>
+<li>Side note, if you see a en empty box below and would like to see the code that should be there, try reloading the page. I’m looking for a fix..</li>
+</ul>
 <pre class="python"><code>class Mosquito:
     &quot;&quot;&quot;Contains the details of each Mosquito&quot;&quot;&quot;
     def __init__(self, mother_gene_infected, father_gene_infected, sex):
@@ -72,7 +75,7 @@ class Simulation:
 
     def density_dependent_survival(self, a=0.25, beta=0.5):
         &quot;&quot;&quot;
-        Reduce the current population in a density-dependent manner,
+        Reduce the current population in a density-dependent manner.
         When the population is big the survival rate is lower 
         than when the population is low.
         Surviving individuals will go on to reproduce
@@ -91,7 +94,6 @@ class Simulation:
     def population_statistics(self):
         &quot;&quot;&quot;
         Calculate the population statistics of interest
-        :return:
         &quot;&quot;&quot;
         # Count the number of infected individuals
         infected = len([m for m in self.population if (sum(m.genes) &gt; 0)])
@@ -117,19 +119,19 @@ class Simulation:
         # and whether the population went extinct
         return results_array, len(self.population) == 0</code></pre>
 <p>To plot the results of our model we’re going to need some visualisiation functions. These are included below for completeness.</p>
-<pre class="python"><code>def plot_meta_results(results):
+<pre class="python"><code>import pylab
+import matplotlib.pyplot as plt
+
+def plot_meta_results(results):
     &quot;&quot;&quot;Results plotter for results over multiple simulations&quot;&quot;&quot;
-    import matplotlib.pyplot as plt
     # switch from proportions to percentages
     plt.plot(100 * results[:, 0], 100 * results[:, 1])
     plt.xlabel(&#39;Population percentage of infected individuals introduced&#39;)
     plt.ylabel(&#39;Percentage of simulations with extinction&#39;)
     plt.show()
 
-
 def plot_simulation_results(results):
     &quot;&quot;&quot;Results plotter for results of single simulation&quot;&quot;&quot;
-    import pylab
     x = np.linspace(0, len(results) - 1, len(results))
     popsize = results[:, 0]
     all_infected = results[:, 1]
