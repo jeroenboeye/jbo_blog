@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = FALSE, python.reticulate=FALSE, eval = FALSE)
 
 ### Intro
 
-This week I saw an [article](https://www.nature.com/articles/nbt.4245) pass on an application of [CRISPR](https://en.wikipedia.org/wiki/CRISPR) to exterminate malaria-spreading mosquito populations by introducing a Troyan horse like gene into the gene pool. Genes that harm their carriers would usually not last very long in a population since they have to compete against non-malevolent alternatives. Even with the forces of natural selection acting against these genes, the researchers found a way still to make them thrive. 
+This week I saw an [article](https://www.nature.com/articles/nbt.4245) pass on an application of [CRISPR](https://en.wikipedia.org/wiki/CRISPR) to exterminate malaria-spreading mosquito populations by introducing a Troyan horse like gene into their gene pool. Genes that harm their carriers would usually not last very long in a population since they have to compete against non-malevolent alternatives. Even with the forces of natural selection acting against these genes, the researchers found a way still to make them thrive. 
 
 ### Breaking Mendel's rules
 
@@ -24,7 +24,7 @@ I found this idea to be intriguing and decided to create a simple object-oriente
 ### Building a population model
 
 I prefer building object-oriented population models over purely mathematical ones as they can remain intuitive even when you add layers of complexity.
-In our mosquito population model, the lowest level is simply a mosquito object that holds the relevant details for an individual, being its sex and the genes it carries. Each individual has two copies of our gene of interest. I define the status of the gene as 'infected' (**`True'**) or not infected (**`False'**). While the term 'infected' is not technically correct I'll keep using this analogy in this post for the sake of explainability. 
+In our mosquito population model, the lowest level is simply a mosquito object that holds the relevant details for an individual, being its sex and the genes it carries. Each individual has two copies of our gene of interest. I define the status of the gene as 'infected' (**`True`**) or not infected (**`False`**). While the term 'infected' is not technically correct I'll keep using this analogy in this post for the sake of explainability. 
 
 ```{python}
 class Mosquito:
@@ -35,7 +35,7 @@ class Mosquito:
 ```
 
 
-The main body of code goes into our Simulation class. When an object of this class is created we have to pass it a number of healthy and infected mosquitos to make up the population. I always used 10.000 healthy Mosquitos and introduced a varying number of infected ones. Once the Simulation object is created we can use it's **`main_loop'** method to run the simulation for a number of generations. Each generation the population will go through 2 steps: density-dependent survival and reproduction. In the density-dependent survival step most of the population will be decimated to simulate the fact that most individuals that are born don't get to create new offspring themselves, mosquito life is hard too. I set the density regulation function's parameters to allow a stable population of about 10.000 individuals. When the population gets bigger than that (high density), survival chances will go down and when it is smaller, survival chances will be better and allow the population to grow. This process mimics competition between Mosquitos for some limited resource that they need, like ponds to lay their eggs in, or sleeping humans to bite.  
+The main body of code goes into our Simulation class. When an object of this class is created we have to pass it a number of healthy and infected mosquitos to make up the population. I always used 10.000 healthy Mosquitos and introduced a varying number of infected ones. Once the Simulation object is created we can use it's **`main_loop`** method to run the simulation for a number of generations. Each generation the population will go through 2 steps: density-dependent survival and reproduction. In the density-dependent survival step most of the population will be decimated to simulate the fact that most individuals that are born don't get to create new offspring themselves, mosquito life is hard too. I set the density regulation function's parameters to allow a stable population of about 10.000 individuals. When the population gets bigger than that (high density), survival chances will go down and when it is smaller, survival chances will be better and allow the population to grow. This process mimics competition between Mosquitos for some limited resource that they need, like ponds to lay their eggs in, or sleeping humans to bite.  
 In the reproduction step the surviving females will select a random male from the population and create about 100 new individuals. Note that females with two copies of the malicious gene are infertile and thus are excluded from the reproduction process. The newborn individuals get a gene from both their mother and father. When a parent carries a copy of the malicious gene they will always pass it on to the offspring due to the researcher's hack of Mendel's law.
 ```{python}
 import numpy as np
@@ -179,13 +179,17 @@ if __name__ == '__main__':
     results = dyn.main_loop(n_generations=20)[0]
     plot_simulation_results(results)
 ```
+
 ![Mosquitos_extinct_100](/figs/Mosquitos_extinct_100.png)
+
 The number of infected mosquitos (red line) increases exponentially and then in a few generations crashes along with the rest of the population. Notice how the onset of the decline coincides with the number of individual with 2 copies of the infertility gene reaching almost half the population. In the 8th generation, all individuals are infected with at least 1 copy of the gene which means that in the 9th and final generation all individuals carry 2 copies of the gene, ruling out the existence of fertile females.
 
 ### How many infected Mosquitos do you need to make this work?
 
 While the malicious gene can spread exponentially in this population it does not always succeed in that goal. When the population is at an equilibrium size of about 10.000 individuals each has a chance of about 2% to survive and produce offspring. This low probability means that when we introduce too few infected individuals there is a chance that all of them will perish in the first generations due to bad luck in the lottery of life.
+
 ![Mosquitos_not_extinct_50](/figs/Mosquitos_not_extinct.png)
+
 In the graph above only 50 individuals were introduced and none of them made it past the 2% survival chance in the first generation. The effect of the number of infected individuals introduced on the population's extinction probability is something that we can once again simulate. All we have to do is create a loop over a list with different infected mosquito group sizes and run each simulation a number of times (100) so that we can calculate an average extinction probability.
 
 ```{python}
@@ -221,6 +225,7 @@ if __name__ == '__main__':
                       
     plot_meta_results(results)
 ```
+
 ![Mosquitos_extinction_p_vs_infection_size](/figs/Mosquitos_extinction_p_vs_infection_size.png)
 
 When we increase the number of individuals introduced to about 3% of the whole population (300 individuals) extinction becomes inevitable since in all 100 simulations of this situation the population went extinct. However, these numbers don't really say that much as they depend heavily on the assumptions I've made regarding the population dynamics.
