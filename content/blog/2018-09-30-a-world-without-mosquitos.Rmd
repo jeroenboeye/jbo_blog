@@ -36,7 +36,7 @@ class Mosquito:
 
 
 The main body of code goes into our Simulation class. When an object of this class is created we have to pass it a number of healthy and infected mosquitos to make up the population. I always used 10.000 healthy Mosquitos and introduced a varying number of infected ones. Once the Simulation object is created we can use it's **`main_loop`** method to run the simulation for a number of generations. Each generation the population will go through 2 steps: density-dependent survival and reproduction. In the density-dependent survival step most of the population will be decimated to simulate the fact that most individuals that are born don't get to create new offspring themselves, mosquito life is hard too. I set the density regulation function's parameters to allow a stable population of about 10.000 individuals. When the population gets bigger than that (high density), survival chances will go down and when it is smaller, survival chances will be better and allow the population to grow. This process mimics competition between Mosquitos for some limited resource that they need, like ponds to lay their eggs in, or sleeping humans to bite.  
-In the reproduction step the surviving females will select a random male from the population and create about 100 new individuals. Note that females with two copies of the malicious gene are infertile and thus are excluded from the reproduction process. The newborn individuals get a gene from both their mother and father. When a parent carries a copy of the malicious gene they will always pass it on to the offspring due to the researcher's hack of Mendel's law.
+In the reproduction step the surviving females will select a random mate from the male population and create about 100 new individuals. Note that females with two copies of the malicious gene are infertile and thus are excluded from the reproduction process. The newborn individuals get a gene from both their mother and father. When a parent carries a copy of the malicious gene they will always pass it on to the offspring due to the researcher's hack of Mendel's law.
 ```{python}
 import numpy as np
 class Simulation:
@@ -67,7 +67,7 @@ class Simulation:
         # The old population is overwritten by an empty list and will be filled with new individuals
         self.population = []
         # If there is at least one fertile female..
-        if len(females):
+        if females:
             # select a random male mate for each female
             lucky_males = np.random.choice(males, len(females))
             for i, f in enumerate(females):
@@ -82,7 +82,8 @@ class Simulation:
     def density_dependent_survival(self, a=0.25, beta=0.5):
         """
         Reduce the current population in a density-dependent manner,
-        When the population is big the survival rate is lower than when the population is low.
+        When the population is big the survival rate is lower 
+        than when the population is low.
         Surviving individuals will go on to reproduce
         """
         # Single species density regulation based on Hassell & Comins
@@ -159,7 +160,7 @@ def plot_simulation_results(results):
 ### Simulating a Mosquito's worst nightmare
 
 Now that we've built our simple abstraction of a Mosquito population we can start playing around.
-Let's introduce 100 infected mosquitos carrying one copy of the malicious gene each into a population of 10000 healthy mosquitos.
+Let's introduce 100 infected mosquitos carrying one copy of the malicious gene each into a population of 10.000 healthy mosquitos.
 
 ```{python}
 if __name__ == '__main__':
@@ -182,7 +183,7 @@ if __name__ == '__main__':
 
 ![](/figs/Mosquitos_extinct_100.png)
 
-The number of infected mosquitos (red line) increases exponentially and then in a few generations crashes along with the rest of the population. Notice how the onset of the decline coincides with the number of individual with 2 copies of the infertility gene reaching almost half the population. In the 8th generation, all individuals are infected with at least 1 copy of the gene which means that in the 9th and final generation all individuals carry 2 copies of the gene, ruling out the existence of fertile females.
+The number of infected mosquitos (red line) increases exponentially and then in a few generations crashes along with the rest of the population. Notice how the onset of the decline coincides with the number of individual with 2 copies of the infertility gene (green line) reaching almost half the total population (blue line). In the 8th generation, all individuals are infected with at least 1 copy of the gene which means that in the 9th and final generation all individuals carry 2 copies of the gene, ruling out the existence of fertile females.
 
 ### How many infected Mosquitos do you need to make this work?
 
@@ -233,7 +234,7 @@ When we increase the number of individuals introduced to about 3% of the whole p
 
 ### Is this the real life? Is this just fantasy?
 
-Both from simulations and the lab experiments these researchers carried out it shows that giving a malicious gene a special advantage to be passed on to offspring can wipe out populations and potentially species. One big side note is that both the simulations and lab experiments concern a single, local population without a real notion of spatial separation of individuals and populations. When the gene spreads too fast and dispersal between populations is low, local extinctions could impede a spread over large areas. In addition, some resistance to either the infertility effect of the gene or mechanism that boosts their transfer chances to the next generation could arise.
+Both from simulations and the lab experiments these researchers carried out it shows that giving a malicious gene a special advantage to be passed on to offspring can wipe out populations and potentially species. One big side note is that both the simulations and lab experiments concern a single, local population without a real notion of spatial separation. In a more realistic scenario where space is incorporated the gene could act too fast and exterminate a local population before a neighboring population can be infected, impeding a spread over large areas. In addition, some resistance to either the infertility effect of the gene or mechanism that boosts their transfer chances to the next generation could arise.
 
 ### With great power comes great responsibility
 
