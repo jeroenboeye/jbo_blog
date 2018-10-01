@@ -11,20 +11,18 @@ tags: [Population Dynamics, Simulation, Python]
 knitr::opts_chunk$set(echo = TRUE, python.reticulate=FALSE, eval = FALSE)
 ```
 
-### Intro
-
 This week I saw an [article](https://www.nature.com/articles/nbt.4245) pass on an application of [CRISPR](https://en.wikipedia.org/wiki/CRISPR) to exterminate malaria-spreading mosquito populations by introducing a Troyan horse like gene into their gene pool. Genes that harm their carriers would usually not last very long in a population since they have to compete against non-malevolent alternatives. Even with the forces of natural selection acting against these genes, the researchers found a way still to make them thrive. 
 
 ### Breaking Mendel's rules
 
-By default, genes have a 50% chance to be passed on from parent to offspring, since each individual has 2 copies of a gene and only one copy can be passed on to the next generation per parent. However, a number of [tricks](https://en.wikipedia.org/wiki/Gene_drive) exist to rig this coinflip and make sure a particular copy is passed on. Genes that are not 50 but 100% sure to be transferred to offspring can spread in a population even when they make the individuals that carry them less healthy. The researchers used one of these tricks to boost the spread of a gene that can cause entire populations to collapse. The key to this gene's potency is that it only starts affecting the population once it is already quite common in the gene pool. Only females that get an infected copy from both parents are struck with infertility, males and females with only a single infected copy are completely unaffected. However, thanks to the researchers trick, these infected individuals are sure to pass on the gene to their offspring. This allows the gene to spread exponentially in the population until it is too late. At a certain tipping point most individuals carry at least one copy of the gene and suddenly the next generation is in real trouble. Almost all of the offspring get a copy of the tampered gene from both parents and most females turn out infertile. Yet one generation later the process repeats and complete extinction is suddenly a real possibility.
+By default, genes have a 50% chance to be passed on from parent to offspring, since each individual has 2 copies of a gene and only one copy can be passed on to the next generation per parent. However, a number of [tricks](https://en.wikipedia.org/wiki/Gene_drive) exist to rig this coinflip and make sure a particular copy is passed on. Genes that are not 50 but 100% sure to be transferred to offspring can spread in a population even when they make the individuals that carry them less healthy. The researchers used one of these tricks to boost the spread of a gene that can cause entire populations to collapse. The key to this gene's potency is that it only starts affecting the population once it is already quite common in the gene pool. Only females that get an infected copy from both parents are struck with infertility, males and females with only a single infected copy are completely unaffected. However, thanks to the researchers trick, these infected individuals are sure to pass on the gene to their offspring. This allows the gene to spread exponentially in the population until it is too late. At a certain tipping point most individuals carry at least one copy of the gene and suddenly the next generation is in real trouble. Almost all of the offspring get a copy of the tampered gene from both parents and most females turn out infertile. One generation later the process repeats and complete extinction is suddenly a real possibility.
 
 I found this idea to be intriguing and decided to create a simple object-oriented population dynamics model to see if I could replicate this phenomenon and learn something along the way.
 
 ### Building a population model
 
-I prefer building object-oriented population models over purely mathematical ones as they can remain intuitive even when you add layers of complexity.
-In our mosquito population model, the lowest level is simply a mosquito object that holds the relevant details for an individual, being its sex and the genes it carries. Each individual has two copies of our gene of interest. I define the status of the gene as 'infected' (**`True`**) or not infected (**`False`**). While the term 'infected' is not technically correct I'll keep using this analogy in this post for the sake of explainability.
+I prefer building object-oriented population models over purely mathematical ones as they remain intuitive even when you add layers of complexity.
+In our mosquito population model, the lowest level is simply a mosquito object that holds the relevant details for an individual, being its sex and the genes it carries. Each individual has two copies of our gene of interest. I define the status of the gene as 'infected' (**`True`**) or not infected (**`False`**). While the term 'infected' is not technically correct I'll keep using this analogy in this post for the sake of explainability. 
 
 **Side note**, if you see a en empty box below and would like to see the code that should be there, try reloading the page. I'm looking for a fix..
 
@@ -32,6 +30,7 @@ In our mosquito population model, the lowest level is simply a mosquito object t
 class Mosquito:
     """Contains the details of each Mosquito"""
     def __init__(self, mother_gene_infected, father_gene_infected, sex):
+        # The infection status of each gene is either True or False
         self.genes = [mother_gene_infected, father_gene_infected]
         self.sex = sex
 ```
@@ -113,7 +112,7 @@ class Simulation:
 
     def population_statistics(self):
         """
-        Calculate the population statistics of interest
+        Calculate the population statistics we'll plot
         """
         # Count the number of infected individuals
         infected = len([m for m in self.pop if (sum(m.genes) > 0)])
@@ -128,6 +127,7 @@ class Simulation:
         """
         # create an array to store per-generation results
         results_array = np.zeros(shape=(n_generations + 1, 3))
+        # add the statistics of the initial population
         results_array[0] = self.population_statistics()
 
         for n in range(n_generations):
@@ -140,7 +140,7 @@ class Simulation:
         return results_array, len(self.pop) == 0
 ```
 
-To plot the results of our model we're going to need some visualisiation functions. These are included below for completeness.
+To plot the results of our model we're going to need some visualization functions. These are included below for completeness.
 
 ```{python}
 import pylab
@@ -148,7 +148,7 @@ import matplotlib.pyplot as plt
 
 def plot_meta_results(results):
     """Results plotter for results over multiple simulations"""
-    # switch from proportions to percentages
+    # switch from proportions to percentages and plot
     plt.plot(100 * results[:, 0], 100 * results[:, 1])
     plt.xlabel('Population % of infected individuals introduced')
     plt.ylabel('% of simulations with extinction')
@@ -197,7 +197,7 @@ if __name__ == '__main__':
 
 ![](/figs/Mosquitos_extinct_100.png)
 
-The number of infected mosquitos (red line) increases exponentially and then in a few generations crashes along with the rest of the population. Notice how the onset of the decline coincides with the number of individual with 2 copies of the infertility gene (green line) reaching almost half the total population (blue line). In the 8th generation, all individuals are infected with at least 1 copy of the gene which means that in the 9th and final generation all individuals carry 2 copies of the gene, ruling out the existence of fertile females.
+The number of infected mosquitos (red line) increases exponentially and then in a few generations crashes along with the rest of the population. In the 8th generation, all individuals are infected with at least 1 copy of the gene which means that in the 9th and final generation all individuals carry 2 copies of the gene (green line), ruling out the existence of fertile females.
 
 ### How many infected Mosquitos do you need to make this work?
 
@@ -249,8 +249,10 @@ When we increase the number of individuals introduced to about 3% of the whole p
 
 ### Is this the real life? Is this just fantasy?
 
-Both from simulations and the lab experiments these researchers carried out it shows that giving a malicious gene a special advantage to be passed on to offspring can wipe out populations and potentially species. One big side note is that both the simulations and lab experiments concern a single, local population without a real notion of spatial separation. In a more realistic scenario where space is incorporated the gene could act too fast and exterminate a local population before a neighboring population can be infected, impeding a spread over large areas. In addition, some resistance to either the infertility effect of the gene or mechanism that boosts their transfer chances to the next generation could arise.
+Both from simulations and the lab experiments these researchers carried out it shows that giving a malicious gene a special advantage to be passed on to offspring can wipe out populations and potentially species. One big side note is that both the simulations and lab experiments concern a single, local population where all individuals are equally likely to interact with one another. In a more realistic scenario the spatial segregation of individuals and populations should be incorporated. It's possible that the gene is so deadly that it exterminates a local population before a neighboring population can be infected which would impede a spread over large areas. In addition, some resistance to either the infertility effect of the gene or mechanism that boosts their transfer chances to the next generation could arise.
 
 ### With great power comes great responsibility
 
 Now that it seems we can wield this power, the obvious question is whether we should, both for safety, ecological, and ethical reasons. Species fit into an ecosystem through a myriad of interactions and removing one could trigger unexpected cascades when the system is insufficiently understood. Should we ban the use of a species eliminator if we had one? These are important question up for discussion. The stakes are high but so is the price, the power to wipe out malaria, a disease that strikes more than 200 million people each year killing more than 400.000, is very tempting indeed. 
+
+PS: Full code can be found [here](https://gist.github.com/jeroenboeye/9f4451ee6902f0921d4067af23e754f6)
