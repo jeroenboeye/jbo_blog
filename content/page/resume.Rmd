@@ -16,7 +16,7 @@ I enjoy getting insights out of data using programming tools. During my PhD I've
 
 * R (Tidyverse adept, sparklyr, Rmarkdown, ...)
 * Python (Monte carlo individual based simulations, Pandas, sklearn, ...)
-* SQL (Impala, Oracle, MSSQL, PostgreSQL)
+* SQL (Impala, Oracle, MSSQL, PostgreSQL, Postgis)
 * MongoDB
 * Spark (SparkSQL, streaming)
 * Jupyter
@@ -24,21 +24,28 @@ I enjoy getting insights out of data using programming tools. During my PhD I've
 
 ### Experience
 
-##### Senior Data Scientist, [Faktion](https://www.faktion.com/)
+##### Machine learning engineer & head of ML education, [Faktion](https://www.faktion.com/)
 2018-Present
+
+Datacamp instructor:
+
+* Created the course [Dimensionality reduction in Python](https://www.datacamp.com/courses/dimensionality-reduction-in-python)
 
 Sensor data analysis:
 
 * Building condition classifiers for high throughput telemtry sensor data
 * Setting up machine learning pipeline within lambda architecture
 
-Natural Language Understanding:
+Sales analytics:
 
-* Speech to text demo
-* Intent classification
+* Product recommendation engine
+* Time series forecasts (ARIMA)
+* Customer segmentation
+* Propensity model
 
-Video analysis:
+Computer vision:
 
+* Solar panel detector from aerial images (Dockerized PostgreSQL + Postgis database for aerial image preprocessing -> Microsoft Azure custom vision API)
 * Winner of the [2018 Vinci Energies Hackathon](https://www.faction.xyz/human-activity-capturer-and-klassifier-wins-first-prize-at-vinci-energies-hackathon/) detecting emergency situations from video data
 
 Consulting:
