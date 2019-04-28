@@ -1,0 +1,93 @@
+---
+title: "Baby-weight-analysis"
+author: Jeroen Boeye
+date: '2019-05-01'
+slug: Baby-weight-analysis
+comments: true
+categories: [R]
+tags: [R, Baby weight]
+---
+
+
+
+<div id="intro" class="section level3">
+<h3>Intro</h3>
+<p>When our first kid was born we decided to try breastfeeding him as long as possible since this is widely regarded as the healthiest thing to do. However, things didn’t go as smoothly as we hoped and the baby struggled to gain sufficient weight. In our urge to get some control over the situation we started measuring the baby before and after every feeding session to check whether he actually drank something. Over time this resulted in a dataset that is much more detailed than a standard baby weight dataset with a measurement every few days or weeks.</p>
+<p>After 2 months of breastfeeding this was the pattern:</p>
+<pre class="r"><code>library(rprojroot)
+rt &lt;- rprojroot::is_rstudio_project
+
+# Reading and pre-processing the WHO data
+who_df &lt;- read_delim(&quot;https://www.who.int/childgrowth/standards/wfa_boys_p_exp.txt&quot;, delim = &quot;\t&quot;)%&gt;%
+  setNames(tolower(make.names(names(.))))%&gt;%
+  mutate(datetime = ymd_hms(&quot;2016-10-24 17:00:00&quot;) + days(age))%&gt;%
+  select(datetime, p5, p25, p50, p75, p95) %&gt;% 
+  gather(key = quantile, value = weight, p5:p95)
+
+custom_theme &lt;-  theme_bw()+
+  theme(legend.title = element_blank(),
+        legend.justification = &#39;top&#39;,
+        axis.title.x = element_blank(),
+        panel.grid.major = element_line(colour = &#39;grey50&#39;, size = rel(0.6)),
+        axis.ticks = element_line(colour = &#39;grey50&#39;, size = rel(0.6)),
+        panel.border = element_blank())
+  
+read_csv(rt$find_file(&quot;static/files/baby_weights.csv&quot;)) %&gt;%
+  filter(datetime &lt; &quot;2016-12-16 15:00:00&quot;) %&gt;% 
+  ggplot(aes(datetime, weight))+
+  geom_line(data = who_df%&gt;%
+                    filter(datetime &lt; ymd(&#39;2016-12-18&#39;)), aes(group = quantile))+
+  geom_label(data = who_df%&gt;%
+              filter(datetime &lt; ymd(&#39;2016-12-18&#39;))%&gt;%
+              group_by(quantile)%&gt;%
+              filter(datetime == max(datetime)),
+            aes(group = quantile, label = quantile),
+            hjust = 0.1)+
+  geom_point(aes(colour = feeding_status), alpha=0.5, shape=20)+
+  scale_color_brewer(palette = &#39;Set2&#39;, na.value = &quot;grey50&quot;)+
+  scale_x_datetime(limits = ymd_hms(c(&quot;2016-10-24 00:00:00&quot;, &quot;2016-12-18 00:00:00&quot;)),
+                 date_breaks = &quot;2 weeks&quot;, 
+                 date_labels = &quot;%B %d&quot;)+
+  labs(title = &quot;Baby weight over time&quot;,
+       y = &#39;Weight (Kg)&#39;)+
+  custom_theme</code></pre>
+<p><img src="/blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-1-1.png" width="1440" /></p>
+<p>The black lines are the <a href="https://www.who.int/childgrowth/standards/wfa_boys_p_exp.txt">baby weight quantiles</a> provided by the World Health Orginization. Our son was right at the median (p50) at birth but gradually lost ground and was dropping below the 5% quantile after 2 months. After strugling for one month we rented a scale to measure him before and after feeding sessions, you can see these measurements as coloured dots in the plot.</p>
+</div>
+<div id="taking-matters-in-our-own-hands" class="section level3">
+<h3>Taking matters in our own hands</h3>
+<p>Up to this point we’d been following the advice given to us by a nurse/midwife who was following up on us. She’s a strong breastfeeding advocate and as first time parents we kept following her advice to push through during those first two months. However, as time progressed our son kept losing ground on the growth curve and the advice to just keep trying felt more and more out of touch with the reality that it simply wasn’t working. We therefore decided to take matters in our own hands and ignore the pressure to stick to breastfeeding.</p>
+<pre class="r"><code>read_csv(rt$find_file(&quot;static/files/baby_weights.csv&quot;)) %&gt;%
+  filter(datetime &lt; &quot;2017-02-16 15:00:00&quot;) %&gt;% 
+  ggplot(aes(datetime, weight))+
+  geom_line(data = who_df%&gt;%
+                    filter(datetime &lt; ymd(&#39;2017-02-16&#39;)), aes(group = quantile))+
+  geom_label(data = who_df%&gt;%
+              filter(datetime &lt; ymd(&#39;2017-02-16&#39;))%&gt;%
+              group_by(quantile)%&gt;%
+              filter(datetime == max(datetime)),
+            aes(group = quantile, label = quantile),
+            hjust = 0.1)+
+  geom_point(aes(colour = feeding_status), alpha=0.5, shape=20)+
+  annotate(&quot;segment&quot;, x = ymd_hms(&quot;2017-01-02 00:00:00&quot;), xend = ymd_hms(&quot;2016-12-21 00:00:00&quot;), 
+           y = 3.7, yend = 4.2, colour = &quot;grey10&quot;, size=2, alpha=0.9, arrow=arrow())+
+  annotate(&quot;text&quot;, x = ymd_hms(&quot;2017-01-15 00:00:00&quot;), y = 3.6, 
+           label = &quot;Switch to bottle feeding&quot; , size=6, fontface=&quot;bold&quot;)+
+  scale_color_brewer(palette = &#39;Set2&#39;, na.value = &quot;grey50&quot;)+
+  scale_x_datetime(limits = ymd_hms(c(&quot;2016-10-24 00:00:00&quot;, &quot;2017-02-16 10:00:00&quot;)),
+                 date_breaks = &quot;1 month&quot;, 
+                 date_labels = &quot;%B&quot;)+
+  labs(title = &quot;Baby weight over time&quot;,
+       y = &#39;Weight (Kg)&#39;)+
+  custom_theme</code></pre>
+<p><img src="/blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-2-1.png" width="1440" /></p>
+<p>The results were spectacular, in just one month time the baby raced back past the 50% quantile and kept going. We went from having a skinny baby to a rather chubby one in no time. Fast forward two and a half years and the baby is now a happy todler doing just fine.</p>
+</div>
+<div id="conclusion" class="section level3">
+<h3>Conclusion</h3>
+<p>I wouldn’t want the takeaway from this post to be that breastfeeding is bad, it clearly isn’t and I too believe mother’s milk is healthiest. I would however like to ask of people who advise young parents on this matter to be a bit less dogmatic about the whole thing. Due to the pressure we felt from different sources it seemed that moving towards bottle feeding was irresponsible while in hindsight the opposite was true and we sticked to it for too long.</p>
+</div>
+<div id="additional-number-crunshing" class="section level3">
+<h3>Additional number crunshing</h3>
+<p>Since this dataset has a pretty high level of detail there is some additional things that we can learn here.</p>
+</div>

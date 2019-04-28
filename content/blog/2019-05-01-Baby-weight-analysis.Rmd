@@ -1,0 +1,113 @@
+---
+title: "Baby-weight-analysis"
+author: Jeroen Boeye
+date: '2019-05-01'
+slug: Baby-weight-analysis
+comments: true
+categories: [R]
+tags: [R, Baby weight]
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+knitr::opts_chunk$set(cache = TRUE, warning = FALSE, message = FALSE, 
+                      echo = TRUE, dpi = 180)
+options(width=100, dplyr.width = 150)
+library(ggplot2)
+library(readr)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+```
+
+### Intro
+
+When our first kid was born we decided to try breastfeeding him as long as possible since this is widely regarded as the healthiest thing to do. However, things didn't go as smoothly as we hoped and the baby struggled to gain sufficient weight. In our urge to get some control over the situation we started measuring the baby before and after every feeding session to check whether he actually drank something. Over time this resulted in a dataset that is much more detailed than a standard baby weight dataset with a measurement every few days or weeks. 
+
+After 2 months of breastfeeding this was the pattern:
+
+```{r, fig.width=8, fig.height=4}
+library(rprojroot)
+rt <- rprojroot::is_rstudio_project
+
+# Reading and pre-processing the WHO data
+who_df <- read_delim("https://www.who.int/childgrowth/standards/wfa_boys_p_exp.txt", delim = "\t")%>%
+  setNames(tolower(make.names(names(.))))%>%
+  mutate(datetime = ymd_hms("2016-10-24 17:00:00") + days(age))%>%
+  select(datetime, p5, p25, p50, p75, p95) %>% 
+  gather(key = quantile, value = weight, p5:p95)
+
+custom_theme <-  theme_bw()+
+  theme(legend.title = element_blank(),
+        legend.justification = 'top',
+        axis.title.x = element_blank(),
+        panel.grid.major = element_line(colour = 'grey50', size = rel(0.6)),
+        axis.ticks = element_line(colour = 'grey50', size = rel(0.6)),
+        panel.border = element_blank())
+  
+read_csv(rt$find_file("static/files/baby_weights.csv")) %>%
+  filter(datetime < "2016-12-16 15:00:00") %>% 
+  ggplot(aes(datetime, weight))+
+  geom_line(data = who_df%>%
+                    filter(datetime < ymd('2016-12-18')), aes(group = quantile))+
+  geom_label(data = who_df%>%
+              filter(datetime < ymd('2016-12-18'))%>%
+              group_by(quantile)%>%
+              filter(datetime == max(datetime)),
+            aes(group = quantile, label = quantile),
+            hjust = 0.1)+
+  geom_point(aes(colour = feeding_status), alpha=0.5, shape=20)+
+  scale_color_brewer(palette = 'Set2', na.value = "grey50")+
+  scale_x_datetime(limits = ymd_hms(c("2016-10-24 00:00:00", "2016-12-18 00:00:00")),
+                 date_breaks = "2 weeks", 
+                 date_labels = "%B %d")+
+  labs(title = "Baby weight over time",
+       y = 'Weight (Kg)')+
+  custom_theme
+
+```
+
+The black lines are the [baby weight quantiles](https://www.who.int/childgrowth/standards/wfa_boys_p_exp.txt) provided by the World Health Orginization. Our son was right at the median (p50) at birth but gradually lost ground and was dropping below the 5% quantile after 2 months.
+After strugling for one month we rented a scale to measure him before and after feeding sessions, you can see these measurements as coloured dots in the plot.
+
+### Taking matters in our own hands
+
+Up to this point we'd been following the advice given to us by a nurse/midwife who was following up on us. She's a strong breastfeeding advocate and as first time parents we kept following her advice to push through during those first two months. However, as time progressed our son kept losing ground on the growth curve and the advice to just keep trying felt more and more out of touch with the reality that it simply wasn't working. We therefore decided to take matters in our own hands and ignore the pressure to stick to breastfeeding. 
+
+```{r, fig.width=8, fig.height=4}
+read_csv(rt$find_file("static/files/baby_weights.csv")) %>%
+  filter(datetime < "2017-02-16 15:00:00") %>% 
+  ggplot(aes(datetime, weight))+
+  geom_line(data = who_df%>%
+                    filter(datetime < ymd('2017-02-16')), aes(group = quantile))+
+  geom_label(data = who_df%>%
+              filter(datetime < ymd('2017-02-16'))%>%
+              group_by(quantile)%>%
+              filter(datetime == max(datetime)),
+            aes(group = quantile, label = quantile),
+            hjust = 0.1)+
+  geom_point(aes(colour = feeding_status), alpha=0.5, shape=20)+
+  annotate("segment", x = ymd_hms("2017-01-02 00:00:00"), xend = ymd_hms("2016-12-21 00:00:00"), 
+           y = 3.7, yend = 4.2, colour = "grey10", size=2, alpha=0.9, arrow=arrow())+
+  annotate("text", x = ymd_hms("2017-01-15 00:00:00"), y = 3.6, 
+           label = "Switch to bottle feeding" , size=6, fontface="bold")+
+  scale_color_brewer(palette = 'Set2', na.value = "grey50")+
+  scale_x_datetime(limits = ymd_hms(c("2016-10-24 00:00:00", "2017-02-16 10:00:00")),
+                 date_breaks = "1 month", 
+                 date_labels = "%B")+
+  labs(title = "Baby weight over time",
+       y = 'Weight (Kg)')+
+  custom_theme
+```
+
+The results were spectacular, in just one month time the baby raced back past the 50% quantile and kept going. We went from having a skinny baby to a rather chubby one in no time. Fast forward two and a half years and the baby is now a happy todler doing just fine.
+
+
+### Conclusion
+
+I wouldn't want the takeaway from this post to be that breastfeeding is bad, it clearly isn't and I too believe mother's milk is healthiest. I would however like to ask of people who advise young parents on this matter to be a bit less dogmatic about the whole thing. Due to the pressure we felt from different sources it seemed that moving towards bottle feeding was irresponsible while in hindsight the opposite was true and we sticked to it for too long. 
+
+
+### Additional number crunshing
+
+Since this dataset has a pretty high level of detail there is some additional things that we can learn here.
