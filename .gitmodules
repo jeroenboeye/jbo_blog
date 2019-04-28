@@ -1,1 +1,4 @@
 
+[submodule "themes/minimo"]
+	path = themes/minimo
+	url = https://github.com/jeroenboeye/minimo
