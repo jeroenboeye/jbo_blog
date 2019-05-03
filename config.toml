@@ -44,22 +44,9 @@ suffix = ""
 # date & time format: https://golang.org/pkg/time/
 dateFormat = "2006, Jan 02"
 listDateFormat = "2006, Jan 02"
-hideEntryNavigation = ["page"] # boolean / array of sections
-hideEntryMeta = ["page"] # boolean / array of sections
+hideEntryNavigation = false
+hideSocialMenu = false
 showReadingTime = true
-showLastmod = true
-taxonomyCloudShuffle = false
-accentColor = "#ffcd00"
-hideMainMenu = false
-
-[params.sidebar]
-enable = true
-
-[params.widgets]
-header = ["breadcrumbs"]
-homepage = ["recent_posts"]
-sidebar = ["about","sidebar_menu"]
-footer = ["social_menu"]
 
 [params.opengraph.facebook]
 admins = [] # array of Facebook IDs
