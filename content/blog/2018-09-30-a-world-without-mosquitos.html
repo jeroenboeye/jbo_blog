@@ -19,7 +19,6 @@ tags: [Population Dynamics, Simulation, Python]
 <div id="building-a-population-model" class="section level3">
 <h3>Building a population model</h3>
 <p>I prefer building object-oriented population models over purely mathematical ones as they remain intuitive even when you add layers of complexity. In our mosquito population model, the lowest level is simply a mosquito object that holds the relevant details for an individual, being its sex and the genes it carries. Each individual has two copies of our gene of interest. I define the status of the gene as ‘infected’ (<strong><code>True</code></strong>) or not infected (<strong><code>False</code></strong>). While the term ‘infected’ is not technically correct I’ll keep using this analogy in this post for the sake of explainability.</p>
-<p><strong>Side note</strong>, if you see a en empty box below and would like to see the code that should be there, try reloading the page. I’m looking for a fix..</p>
 <pre class="python"><code>class Mosquito:
     &quot;&quot;&quot;Contains the details of each Mosquito&quot;&quot;&quot;
     def __init__(self, mother_gene_infected, father_gene_infected, sex):
@@ -233,6 +232,6 @@ def plot_simulation_results(results):
 </div>
 <div id="with-great-power-comes-great-responsibility" class="section level3">
 <h3>With great power comes great responsibility</h3>
-<p>Now that it seems we can wield this power, the obvious question is whether we should, both for safety, ecological, and ethical reasons. Species fit into an ecosystem through a myriad of interactions and removing one could trigger unexpected cascades when the system is insufficiently understood. Should we ban the use of a species eliminator if we had one? These are important question up for discussion. The stakes are high but so is the price, the power to wipe out malaria, a disease that strikes more than 200 million people each year killing more than 400.000, is very tempting indeed.</p>
+<p>Now that it seems we can wield this power, the obvious question is whether we should, both for safety, ecological, and ethical reasons. Species fit into an ecosystem through a myriad of interactions and removing one could trigger unexpected cascades when the system is insufficiently understood. Should we ban the use of a species eliminator if we had one? This is an important question up for discussion. The stakes are high but so is the prize, the power to wipe out malaria, a disease that strikes more than 200 million people each year killing more than 400.000, is very tempting indeed.</p>
 <p>PS: Full code can be found <a href="https://gist.github.com/jeroenboeye/9f4451ee6902f0921d4067af23e754f6">here</a></p>
 </div>
