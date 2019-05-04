@@ -125,7 +125,7 @@ The results were spectacular, in just one month time the baby raced back past th
 I wouldn't want the takeaway from this post to be that breastfeeding is bad, it clearly isn't and I too believe mother's milk is healthiest. I would, however, like people who advise young parents on this matter to be less dogmatic about the whole thing. Due to the pressure we felt from different sources it seemed that moving towards bottle feeding was irresponsible while in hindsight the opposite was true and we stuck to it for too long. 
 
 
-### Additional number crunshing
+### Additional number crunching
 
 Since this dataset has a pretty high level of detail there are some additional things that we can learn here. One of those is the within-day variance in baby weights. To derive this variance we'll plot a simple linear model on a part of the data where the weight increased at a steady pace.
 
@@ -167,4 +167,4 @@ augment(model) %>%
 
 Since the spread in baby weights is quite big it is hard to tell how much weight a baby has gained over a couple of days time if you only measure the baby once on both days. This was something that bugged me when the nurse would tell us the baby was doing fine after an increase of 100 grams over two days somewhere at the beginning of November was measured. 
 
-One side note on the data shown here is that is kind of exaggerates the spread in daily values since we always measured the baby before and after feedings when the differences were most extreme. Because of this, the distribution takes a bimodal shape with measurements before feedings on the left and after feedings on the right. If you'd measure at random points during the day you'd get a normal distribution.
+One side note on the data shown here is that it kind of exaggerates the spread in daily values since we always measured the baby before and after feedings when the differences were most extreme. Because of this, the distribution takes a bimodal shape with measurements before feedings on the left and after feedings on the right. If you'd measure at random points during the day you'd get a normal distribution.

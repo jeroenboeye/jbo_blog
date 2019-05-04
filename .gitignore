@@ -3,7 +3,7 @@
 .RData
 .Ruserdata
 *.zip
-/public/*
-/blogdown/*
+/public/
+/blogdown/
 *_cache*
-/themes/minimo/*
+/themes/minimo/
