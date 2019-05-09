@@ -7,9 +7,7 @@ comments: true
 categories: [R]
 tags: [R, Kids]
 description: "This is a test"
-header:
-  caption: ''
-  image: /figs/baby_weights.png
+twitterImg: /figs/baby_weights.png
 ---
 
 ```{r setup, include=FALSE}
