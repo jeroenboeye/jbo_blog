@@ -7,9 +7,11 @@ comments: true
 categories: [R]
 tags: [R, Kids]
 twitterImg: '/figs/baby_weights.png'
+summary_large_image: '/figs/baby_weights.png'
 header:
   caption: ''
-  image: '/figs/Mosquitos_extinct_100.png'
+  summary_large_image: '/figs/baby_weights.png'
+  image: '/figs/baby_weights.png'
 ---
 
 ```{r setup, include=FALSE}
@@ -165,6 +167,6 @@ augment(model) %>%
   custom_theme + theme(legend.key.width = unit(0.32, "cm"))
 ```
 
-Since the spread in baby weights is quite big it is hard to tell how much weight a baby has gained over a couple of days time if you only measure the baby once on both days. This was something that bugged me when the nurse would tell us the baby was doing fine after an increase of 100 grams over two days somewhere at the beginning of November was measured. 
+Since the spread in baby weights is quite big it is hard to tell how much weight a baby has gained over a couple of days time if you only measure the baby once on both days. This was something that bugged me when the nurse would tell us the baby was doing fine after a measured increase of 100 grams over two days somewhere at the beginning of November. 
 
 One side note on the data shown here is that it kind of exaggerates the spread in daily values since we always measured the baby before and after feedings when the differences were most extreme. Because of this, the distribution takes a bimodal shape with measurements before feedings on the left and after feedings on the right. If you'd measure at random points during the day you'd get a normal distribution.
