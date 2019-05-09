@@ -5,9 +5,9 @@ date: '2019-05-04'
 slug: they-grow-so-fast
 comments: true
 large_thumb: yes
-image: /figs/baby_weights.png
-twitter:
-  description: "This is a test"
+img:
+  thumb: /figs/baby_weights.png
+description: "This is a test"
 categories: [R]
 tags: [R, Kids]
 
