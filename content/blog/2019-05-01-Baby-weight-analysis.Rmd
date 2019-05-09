@@ -6,11 +6,13 @@ slug: they-grow-so-fast
 comments: true
 categories: [R]
 tags: [R, Kids]
-# twitterImg: '/figs/baby_weights.png'
-# summary: '/figs/baby_weights.png'
+twitterImg: '/figs/baby_weights.png'
+summary: '/figs/baby_weights.png'
+summary_large_image: '/figs/baby_weights.png'
 header:
   caption: ''
   summary: '/figs/baby_weights.png'
+  summary_large_image: '/figs/baby_weights.png'
   image: '/figs/baby_weights.png'
 ---
 
