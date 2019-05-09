@@ -4,11 +4,15 @@ author: Jeroen Boeye
 date: '2019-05-04'
 slug: they-grow-so-fast
 comments: true
+large_thumb: yes
+image: /figs/baby_weights.png
+twitter:
+  description: "This is a test"
 categories: [R]
 tags: [R, Kids]
-description: "This is a test"
-twitterImg: /figs/baby_weights.png
+
 ---
+
 
 ```{r setup, include=FALSE}
 library(knitr)
@@ -16,6 +20,7 @@ knitr::opts_chunk$set(cache = TRUE, warning = FALSE, message = FALSE,
                       echo = TRUE, dpi = 180)
 options(width=100, dplyr.width = 150)
 ```
+
 
 ### Step 1, get a baby
 
