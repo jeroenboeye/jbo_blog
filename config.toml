@@ -69,7 +69,6 @@ pageID = ""
 
 [params.opengraph.twitter]
 page = "JeroenBoeye" # Twitter page username
-author = "JeroenBoeye"
 
 [params.seo]
 # Title Separator: - – — · • * ⋆ | ~ « » < >
