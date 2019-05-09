@@ -4,9 +4,8 @@ author: Jeroen Boeye
 date: '2019-05-04'
 slug: they-grow-so-fast
 comments: true
-large_thumb: yes
-img:
-  thumb: /blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-2-1.png
+large_thumb: true
+twitterImg: /blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-2-1.png
 # image: /blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-2-1.png
 description: This is a test
 categories: [R]
