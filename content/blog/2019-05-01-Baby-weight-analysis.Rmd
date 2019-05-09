@@ -7,7 +7,8 @@ comments: true
 large_thumb: yes
 img:
   thumb: /figs/baby_weights.png
-description: "This is a test"
+# image: /blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-2-1.png
+description: This is a test
 categories: [R]
 tags: [R, Kids]
 

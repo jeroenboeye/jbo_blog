@@ -8,6 +8,9 @@
   <meta name="twitter:card" content="summary">
 {{ end }}
 
+<meta property="og:image" content="{{ .Site.BaseURL }}{{ .Params.img.thumb }}" />
+<meta name="twitter:image:src" content="{{ .Site.BaseURL }}{{ .Params.img.thumb }}">
+
 <meta content="{{ .Site.Title }}" property="og:site_name">
 
 <!-- Set a page title, or default to site title if missing for some reason  -->
