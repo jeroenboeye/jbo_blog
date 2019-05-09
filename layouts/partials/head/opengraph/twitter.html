@@ -1,33 +1,28 @@
-<meta name='twitter:card' content='summary_large_image'>
+{{ if eq .URL "/" }}
+<title>{{ .Site.Title }}</title>
+<meta property="og:title" content="{{ .Site.Title }}">
+<meta property="og:type" content="website">
+<meta property="description" content="{{ .Site.Params.description }}">
+<meta property="og:description" content="{{ .Site.Params.description }}">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="{{ .Site.BaseURL }}{{ .Site.Params.logo.url }}" >
+{{ else }}
+<title>{{ .Title }}{{ with .Params.subtitle }} - {{ . }} {{ end }} - {{ .Site.Title }}</title>
+<meta property="og:title" content="{{ .Title }} - {{ .Site.Title }}">
+<meta property="og:type" content="article">
 
-{{- with .Site.Params.opengraph.twitter.page -}}
-  <meta name='twitter:site' content='@{{- . -}}'>
-{{- end -}}
+  {{ if .Params.twitterImg }}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="{{ .Site.BaseURL }}{{ .Params.twitterImg }}" >
+  {{ else }}
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:image" content="{{ .Site.BaseURL }}{{ .Site.Params.logo.url }}" >
+  {{ end }}
+  
+{{ $defaultDescription := printf "Article posted by %s, on %s" .Params.author (.Date.Format "Monday, January 2nd, 2006") }}
+<meta property="description" content="{{ .Description | default $defaultDescription }}">
+<meta property="og:description" content="{{ .Description | default $defaultDescription }}">
+{{ end }}
 
-{{- range $authorID := .Params.authors -}}
-  {{- $author := ( index $.Site.Data.authors $authorID ) -}}
-  {{- with $author.social.twitter -}}
-    <meta name='twitter:creator' content='@{{- . -}}'>
-  {{- end -}}
-{{- end -}}
-
-{{- with .Params.cover -}}
-  {{- $type := ( printf "%T" . ) -}}
-  {{- $isMap := ( not ( eq $type "string" ) ) -}}
-
-  {{- $image := "" -}}
-  {{- if $isMap -}}
-    {{- $image = .image -}}
-  {{- else -}}
-    {{- $image = . -}}
-  {{- end -}}'>
-
-  {{- $image = ( replaceRE "^\\./" $.RelPermalink $image ) -}}
-
-  <meta property='twitter:image' content='{{- $image | absURL -}}'>
-  {{- if $isMap -}}
-    {{- with .caption -}}
-    <meta property='twitter:image:alt' content='{{ . | markdownify }}'>
-    {{- end -}}
-  {{- end -}}
-{{- end -}}
+<meta name="twitter:creator" content="@jeroenboeye">
+<meta name="twitter:site" content="@jeroenboeye">
