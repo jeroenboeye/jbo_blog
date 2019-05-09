@@ -51,6 +51,7 @@ showLastmod = true
 taxonomyCloudShuffle = false
 accentColor = "#ffcd00"
 hideMainMenu = false
+enableRSS = true
 
 [params.sidebar]
 enable = true
@@ -68,6 +69,7 @@ pageID = ""
 
 [params.opengraph.twitter]
 page = "JeroenBoeye" # Twitter page username
+author = "JeroenBoeye"
 
 [params.seo]
 # Title Separator: - – — · • * ⋆ | ~ « » < >
