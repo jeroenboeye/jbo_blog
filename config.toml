@@ -8,7 +8,6 @@ theme = "minimo"
 contentdir = "content"
 layoutdir = "layouts"
 publishdir = "public"
-
 disqusShortname = "jeroenboeye-com"
 googleAnalytics = "UA-108004942-1"
 
@@ -82,6 +81,8 @@ twitter = "JeroenBoeye"
 [params.social.config]
 platforms = ["email","twitter","github","linkedin"]
 
+[params.logo]
+url = "/figs/logo.png"
 [taxonomies]
 author = "Jeroen Boeye"
 category = "categories"
