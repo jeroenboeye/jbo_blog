@@ -1,13 +1,13 @@
 ---
 title: "They grow so fast (but how fast exactly?)"
 author: Jeroen Boeye
-date: '2019-05-04'
+date: '2019-05-10'
 slug: they-grow-so-fast
 comments: true
 twitterImg: /blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-2-1.png
 categories: [R]
 tags: [R, Breastfeeding, Baby]
-description: An analysis on our son's weight after birth and the pressure for breast feeding.
+description: An analysis on our son's weight after birth and the overly strong pressure for breast feeding.
 ---
 
 
