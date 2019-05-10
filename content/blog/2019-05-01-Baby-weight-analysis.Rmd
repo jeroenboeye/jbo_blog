@@ -7,7 +7,7 @@ comments: true
 twitterImg: /blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-2-1.png
 categories: [R]
 tags: [R, Breastfeeding, Baby]
-description: An analysis on our son's weight after birth and the overly strong pressure for breast feeding.
+description: An analysis on our son's weight after birth and the overly strong pressure for breastfeeding.
 ---
 
 
@@ -25,7 +25,7 @@ When our first kid was born we decided to try breastfeeding him as long as possi
 
 After 2 months of breastfeeding this was the pattern:
 
-```{r, fig.width=8, fig.height=4}
+```{r, fig.width=7, fig.height=3.5}
 library(tidyverse)
 library(readr)
 library(lubridate)
@@ -87,7 +87,7 @@ After struggling for one month we rented a scale to measure him before and after
 
 Up to this point, we'd been following the advice given to us by a nurse/midwife who was following up on us. She's a strong breastfeeding advocate and as first-time parents we kept following her advice to push through during those first two months. However, as time progressed our son kept losing ground on the growth curve and the advice to just keep trying felt more and more out of touch with the reality that it simply wasn't working. We, therefore, decided to take matters in our own hands and ignore the pressure to stick to breastfeeding. 
 
-```{r, fig.width=8, fig.height=4}
+```{r, fig.width=7, fig.height=3.5}
 weight_df %>%
   filter(datetime < bday + days(115)) %>% 
   ggplot(aes(datetime, weight))+
@@ -129,7 +129,7 @@ I wouldn't want the takeaway from this post to be that breastfeeding is bad, it 
 
 Since this dataset has a pretty high level of detail there are some additional things that we can learn here. One of those is the within-day variance in baby weights. To derive this variance we'll plot a simple linear model on a part of the data where the weight increased at a steady pace.
 
-```{r, fig.width=8, fig.height=4}
+```{r, fig.width=7, fig.height=3.5}
 # Filter on a part fhe data with a linear increase
 linear_df <- weight_df %>%
   filter(datetime > bday + days(29)) %>%
@@ -153,7 +153,7 @@ linear_df %>%
 You can see that, while the overall trend is a linear increase, the within-day variance is quite big. There are days where the baby is 100 grams below the linear trendline at one point and 100 grams above it at another.
 
 Let's plot the residuals to get a better idea of the spread.
-```{r, fig.width=8, fig.height=4}
+```{r, fig.width=7, fig.height=3.5}
 augment(model) %>% 
   ggplot(aes(x=.resid))+
   geom_histogram(bins = 50, aes(fill=linear_df$feeding_status), 

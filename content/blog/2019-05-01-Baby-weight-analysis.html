@@ -7,7 +7,7 @@ comments: true
 twitterImg: /blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-2-1.png
 categories: [R]
 tags: [R, Breastfeeding, Baby]
-description: An analysis on our son's weight after birth and the overly strong pressure for breast feeding.
+description: An analysis on our son's weight after birth and the overly strong pressure for breastfeeding.
 ---
 
 
@@ -67,7 +67,7 @@ weight_df%&gt;%
   labs(title = &quot;Baby weight over time&quot;,
        y = &#39;Weight (Kg)&#39;)+
   custom_theme</code></pre>
-<p><img src="/blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-1-1.png" width="1440" /></p>
+<p><img src="/blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-1-1.png" width="1260" /></p>
 <p>The black lines are the <a href="https://www.who.int/childgrowth/standards/wfa_boys_p_exp.txt">baby weight quantiles</a> provided by the World Health Organization. Our son was right at the median (p50) at birth but gradually lost ground and was dropping below the 5% quantile after 2 months. After struggling for one month we rented a scale to measure him before and after feeding sessions, you can see these measurements as colored dots in the plot.</p>
 </div>
 <div id="taking-matters-in-our-own-hands" class="section level3">
@@ -100,7 +100,7 @@ weight_df%&gt;%
   labs(title = &quot;Baby weight over time&quot;,
        y = &#39;Weight (Kg)&#39;)+
   custom_theme</code></pre>
-<p><img src="/blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-2-1.png" width="1440" /></p>
+<p><img src="/blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-2-1.png" width="1260" /></p>
 <p>The results were spectacular, in just one month time the baby raced back past the 50% quantile and kept going. We went from having a skinny baby to a rather chubby one in no time. Fast forward two and a half years and the baby is now a happy toddler doing just fine.</p>
 </div>
 <div id="conclusion" class="section level3">
@@ -128,7 +128,7 @@ linear_df %&gt;%
   labs(title = &quot;Baby weight over time with linear model predictions&quot;,
        y = &#39;Weight (Kg)&#39;)+
   custom_theme</code></pre>
-<p><img src="/blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-3-1.png" width="1440" /></p>
+<p><img src="/blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-3-1.png" width="1260" /></p>
 <p>You can see that, while the overall trend is a linear increase, the within-day variance is quite big. There are days where the baby is 100 grams below the linear trendline at one point and 100 grams above it at another.</p>
 <p>Let’s plot the residuals to get a better idea of the spread.</p>
 <pre class="r"><code>augment(model) %&gt;% 
@@ -140,7 +140,7 @@ linear_df %&gt;%
        x = &#39;Weight model residual (Kg)&#39;,
        y = &#39;Count&#39;)+
   custom_theme + theme(legend.key.width = unit(0.32, &quot;cm&quot;))</code></pre>
-<p><img src="/blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-4-1.png" width="1440" /></p>
+<p><img src="/blog/2019-05-01-Baby-weight-analysis_files/figure-html/unnamed-chunk-4-1.png" width="1260" /></p>
 <p>Since the spread in baby weights is quite big it is hard to tell how much weight a baby has gained over a couple of days time if you only measure the baby once on both days. This was something that bugged me when the nurse would tell us the baby was doing fine after a measured increase of 100 grams over two days somewhere at the beginning of November.</p>
 <p>One side note on the data shown here is that it kind of exaggerates the spread in daily values since we always measured the baby before and after feedings when the differences were most extreme. Because of this, the distribution takes a bimodal shape with measurements before feedings on the left and after feedings on the right. If you’d measure at random points during the day you’d get a normal distribution.</p>
 </div>
