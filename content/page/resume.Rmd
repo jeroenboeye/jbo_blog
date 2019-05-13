@@ -9,13 +9,13 @@ comments: false
 
 ### Profile
 
-I enjoy getting insights out of data using programming tools. During my PhD I've learned how to approach complex problems and communicate the results to both expert and non-expert audiences. I have strong data wrangling and visualization skills and typically come up with first results sooner than expected. I'm always keen to expand my technical toolkit and learn new concepts to get more angles while tackling a problem.
+I enjoy getting insights out of data using programming tools. During my PhD, I've learned how to approach complex problems and communicate the results to both expert and non-expert audiences. I have strong data wrangling and visualization skills and typically come up with first results sooner than expected. I'm always keen to expand my technical toolkit and learn new concepts to get more angles while tackling a problem.
 
 
 ### Tools
 
 * R (Tidyverse adept, sparklyr, Rmarkdown, ...)
-* Python (Monte carlo individual based simulations, Pandas, sklearn, ...)
+* Python (Monte Carlo individual-based simulations, Pandas, sklearn, ...)
 * SQL (Impala, Oracle, MSSQL, PostgreSQL, Postgis)
 * MongoDB
 * Spark (SparkSQL, streaming)
@@ -33,7 +33,7 @@ Datacamp instructor:
 
 Sensor data analysis:
 
-* Building condition classifiers for high throughput telemtry sensor data
+* Building condition classifiers for high throughput telemetry sensor data
 * Setting up machine learning pipeline within lambda architecture
 
 Sales analytics:
@@ -45,7 +45,7 @@ Sales analytics:
 
 Computer vision:
 
-* Solar panel detector from aerial images (Dockerized PostgreSQL + Postgis database for aerial image preprocessing -> Microsoft Azure custom vision API)
+* Solar panel detector from aerial images (Dockerized PostgreSQL + PostGIS database for aerial image preprocessing -> Microsoft Azure custom vision API)
 * Winner of the [2018 Vinci Energies Hackathon](https://www.faction.xyz/human-activity-capturer-and-klassifier-wins-first-prize-at-vinci-energies-hackathon/) detecting emergency situations from video data
 
 Consulting:
@@ -72,19 +72,19 @@ Custom analyses:
 
 * Vulnerability assessment of global supply chain
 * Optimize office layout based on employee activities
-* Geo tagging addresses and spatial analysis
+* Geo-tagging addresses and spatial analysis
 * Survey analysis
 
-##### PhD student, [Ghent university](http://www.ecology.ugent.be/terec/)
+##### PhD student, [Ghent University](http://www.ecology.ugent.be/terec/)
 2011-2015
  
-Building complex individual based Monte Carlo models in a spatial context (using Python) and run them on [High Performance Computing infrastructure](https://www.ugent.be/hpc/en). Scientific writing and talks. Mentoring students during their Master thesis and teaching. International collaborations.
+Building complex individual-based Monte Carlo models in a spatial context (using Python) and run them on [High Performance Computing infrastructure](https://www.ugent.be/hpc/en). Scientific writing and talks. Mentoring students during their Master thesis and teaching. International collaborations.
 
 ### Education
 
-* Ghent university - PhD in eco-evolutionary dynamics, 2015
-* Antwerp university - MS in evolutionary biology, 2010 (Magna Cum Laude)
-* Antwerp university - BS in biology, 2008 (Cum Laude)
+* Ghent University - PhD in eco-evolutionary dynamics, 2015
+* Antwerp University - MS in evolutionary biology, 2010 (Magna Cum Laude)
+* Antwerp University - BS in biology, 2008 (Cum Laude)
 
 ### Online Courses
 
