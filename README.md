@@ -17,7 +17,7 @@ This should render new html files which can then be pushed.
 Don't change submodule files from within blog repo.
 Make changes in the [Minimo fork](https://github.com/jeroenboeye/minimo) and once pushed run this command within the blog repo:
 
-`git submodule foreach git pull origin master`.
+`git submodule foreach git pull origin master`
 
 Note that it takes a while for the RStudio IDE to discover these changes. Once it does, commit and push the new submodule hash.
 
