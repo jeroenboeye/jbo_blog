@@ -5,6 +5,13 @@ This blog is built with [blogdown](https://github.com/rstudio/blogdown) and [Hug
 
 All blog posts are released under a [Creative Commons Attribution-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-sa/4.0/).
 
+## Note to self
+To update existing files, first adapt the `.Rmd` files and then run:
+
+`blogdown::build_site(build_rmd = 'timestamp')`
+
+This should render new html files which can then be pushed.
+
 ### Update submodule flow
 
 Don't change submodule files from within blog repo.
