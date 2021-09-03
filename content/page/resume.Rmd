@@ -14,27 +14,40 @@ I enjoy getting insights out of data using programming tools. During my PhD, I'v
 
 ### Tools
 
+* Python (Monte Carlo individual-based simulations, Pandas, sklearn, Pytorch...)
 * R (Tidyverse adept, sparklyr, Rmarkdown, ...)
-* Python (Monte Carlo individual-based simulations, Pandas, sklearn, ...)
-* SQL (Impala, Oracle, MSSQL, PostgreSQL, Postgis)
+* SQL (PostgreSQL, Impala, TimescaleDB, MSSQL, Postgis)
 * MongoDB
+* Databricks
 * Spark (SparkSQL, streaming)
-* Jupyter
 * Docker
 
 ### Experience
 
+
+##### Head of Machine Learning, [Faktion](https://www.faktion.com/)
+2021-Present
+
+I'm leading a team of amazing ML engineers on a mission to bring value to our customers using data. We use Computer Vision, Reinforcement Learning, and Natural Language Processing to reach that goal. I work closely with our HR team to recruit the best talent.
+
 ##### Machine learning engineer & head of ML education, [Faktion](https://www.faktion.com/)
-2018-Present
+2018-2020
 
 Datacamp instructor:
 
-* Created the course [Dimensionality reduction in Python](https://www.datacamp.com/courses/dimensionality-reduction-in-python)
+* [Dimensionality reduction in Python](https://www.datacamp.com/courses/dimensionality-reduction-in-python)
+* [Reshaping data with tidyr](https://www.datacamp.com/courses/reshaping-data-with-tidyr)
+
+Intro to ML course:
+* Full day [Machine Learning 101 Using Python](https://github.com/jeroenboeye/ml-tutorial) workshop at the 2019 [MLConference](https://mlconference.ai/) in Berlin.
 
 Sensor data analysis:
 
-* Building condition classifiers for high throughput telemetry sensor data
-* Setting up machine learning pipeline within lambda architecture
+* Building condition classifiers for high throughput telemetry sensor data.
+* Setting up machine learning pipeline within lambda architecture.
+* Anomaly detection pipeline for well-being of elders using infra-red motion sensors.
+* Forecasting electricity and natural gas usage for hundreds of customers.
+* Yield optimization and root-cause analysis of an industrial polymerization process.
 
 Sales analytics:
 
@@ -45,7 +58,8 @@ Sales analytics:
 
 Computer vision:
 
-* Solar panel detector from aerial images (Dockerized PostgreSQL + PostGIS database for aerial image preprocessing -> Microsoft Azure custom vision API)
+* Damage detection on air freight containers.
+* Solar panel detector from aerial images (Dockerized PostgreSQL + PostGIS database for aerial image pre-processing -> Microsoft Azure custom vision API)
 * Winner of the [2018 Vinci Energies Hackathon](https://www.faction.xyz/human-activity-capturer-and-klassifier-wins-first-prize-at-vinci-energies-hackathon/) detecting emergency situations from video data
 
 Consulting:
@@ -92,6 +106,8 @@ Building complex individual-based Monte Carlo models in a spatial context (using
 * [R for data science](/figs/udemy_R_data_science.jpg) by Kirill Eremenko, - Udemy
 * [Python Data Scientist track](https://www.datacamp.com/statement-of-accomplishment/track/44a5321ee748768340d8691ca3964cf9bf11eedc) by various teachers, - Datacamp
 * [Python Programmer track](https://www.datacamp.com/statement-of-accomplishment/track/2f4f712243746878e61b9fd60e6bcb695b205ac0) by various teachers, - Datacamp
+* [AI for everyone](https://www.coursera.org/account/accomplishments/verify/2MQG95D545NY) by Andrew Ng, - Deeplearning.ai (Coursera)
+* [Reinforcement Learning specialization](https://www.coursera.org/account/accomplishments/specialization/UUAXXX9DGD5Q) by University of Alberta, - Coursera
 
 ### Publications
 
