@@ -13,7 +13,7 @@ After 3 years of wrangling sensor data decided to expand my machine learning kno
 Why blog?
 =========
 
-As an open source software user, I've profited enormously from the public work of others. With this blog, I too hope to contribe to the wonderful open source community.
+As an open source software user, I've profited enormously from the public work of others. With this blog, I too hope to contribute to the wonderful open source community.
 
 About This Site
 =========
