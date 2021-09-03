@@ -40,6 +40,7 @@ Datacamp instructor for two courses reaching >18K students:
 * [Reshaping data with tidyr](https://www.datacamp.com/courses/reshaping-data-with-tidyr)
 
 Intro to ML course:
+
 * Full day [Machine Learning 101 Using Python](https://github.com/jeroenboeye/ml-tutorial) workshop at the 2019 [MLConference](https://mlconference.ai/) in Berlin.
 
 Sensor data analysis:
