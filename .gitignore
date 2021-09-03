@@ -9,3 +9,6 @@
 /themes/minimo/
 jbo_blog.Rproj
 README.html
+.DS_Store
+Thumbs.db
+/resources/
